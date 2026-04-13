@@ -71,6 +71,22 @@ export interface CartItem {
   quantity: number
 }
 
+export interface Article {
+  id: string
+  title: string
+  slug: string
+  excerpt: string
+  category: string
+  content: string
+  cover_url: string | null
+  pdf_url: string | null
+  read_time: number
+  is_published: boolean
+  published_at: string
+  created_at: string
+  updated_at: string
+}
+
 export const STATUS_LABELS: Record<OrderStatus, string> = {
   PENDING: 'Pendiente',
   PROCESSING: 'Procesando',

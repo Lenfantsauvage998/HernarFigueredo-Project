@@ -26,7 +26,7 @@ const BookCard: React.FC<BookCardProps> = ({ book, onClick }) => {
       onClick={onClick}
     >
       {/* Book cover */}
-      <div className="relative h-72 overflow-hidden">
+      <div className="relative h-72 overflow-hidden bg-[#1a1b1c]">
         {book.image_url ? (
           <img
             src={book.image_url}
@@ -68,7 +68,7 @@ const BookCard: React.FC<BookCardProps> = ({ book, onClick }) => {
       </div>
 
       {/* Content */}
-      <div className="p-5 border border-white/[0.06] border-t-0 rounded-b-2xl">
+      <div className="p-5">
         <h3 className="font-semibold text-white text-base leading-snug line-clamp-2 mb-1.5 group-hover:text-[#f26822] transition-colors duration-200">
           {book.title}
         </h3>

@@ -13,6 +13,8 @@ import AuthPage from './pages/auth/AuthPage'
 import UserDashboard from './pages/dashboard/UserDashboard'
 import AdminDashboard from './pages/admin/AdminDashboard'
 import ResetPassword from './pages/ResetPassword'
+import Articles from './pages/Articles'
+import ArticleDetail from './pages/ArticleDetail'
 import NotFound from './pages/NotFound'
 import Spinner from './components/ui/Spinner'
 import WhatsAppButton from './components/ui/WhatsAppButton'
@@ -60,7 +62,9 @@ function App() {
             <Navbar />
             <main className="flex-1">
               <Routes>
-                <Route path="/" element={<Landing />} />
+                <Route path="/" element={<Articles />} />
+                <Route path="/articulos" element={<Navigate to="/" replace />} />
+                <Route path="/inicio" element={<Landing />} />
                 <Route path="/libros" element={<Books />} />
                 <Route path="/auth" element={<AuthPage />} />
                 <Route path="/checkout" element={<ProtectedRoute><Checkout /></ProtectedRoute>} />
@@ -73,6 +77,7 @@ function App() {
                 } />
                 <Route path="/admin" element={<AdminRoute><AdminDashboard /></AdminRoute>} />
                 <Route path="/reset-password" element={<ResetPassword />} />
+                <Route path="/articulos/:slug" element={<ArticleDetail />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </main>

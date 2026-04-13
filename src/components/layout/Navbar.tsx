@@ -17,7 +17,7 @@ const Navbar: React.FC = () => {
   const dropdownRef = useRef<HTMLDivElement>(null)
   const itemCount = getItemCount()
 
-  const isLanding = location.pathname === '/'
+  const isLanding = location.pathname === '/inicio'
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 60)
@@ -48,8 +48,9 @@ const Navbar: React.FC = () => {
     : 'bg-[#1f1d1d]/92 backdrop-blur-md border-b border-white/[0.07]'
 
   const navLinks = [
-    { to: '/', label: 'Inicio' },
-    { to: '/libros', label: 'Libros' },
+    { to: '/',        label: 'Artículos' },
+    { to: '/libros',  label: 'Libros' },
+    { to: '/inicio',  label: 'Inicio' },
   ]
 
   return (

@@ -297,12 +297,27 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSuccess }) => {
     setLoading(true)
     try {
       await registerUser(email.trim(), password, name.trim())
-      setTimeout(onSuccess, 500)
+      // Poll until the auth store is populated (profile loaded from DB)
+      let waited = 0
+      const poll = setInterval(() => {
+        const { isAuthenticated, user: u } = useAuthStore.getState()
+        waited += 100
+        if (isAuthenticated && u) {
+          clearInterval(poll)
+          setLoading(false)
+          onSuccess()
+        } else if (waited >= 6000) {
+          // Profile retry in AuthContext is still running — navigate anyway
+          clearInterval(poll)
+          setLoading(false)
+          onSuccess()
+        }
+      }, 100)
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : 'Error al registrarse'
       setError(msg.includes('already') ? 'Ya existe una cuenta con este email' : msg)
-    } finally {
       setLoading(false)
+    } finally {
       setIsCoolingDown(true)
       cooldownRef.current = setTimeout(() => setIsCoolingDown(false), 5000)
     }
@@ -317,7 +332,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSuccess }) => {
       <div className="relative">
         <Input label="Contraseña" type={showPw ? 'text' : 'password'} value={password}
           onChange={(e) => setPassword(e.target.value)} placeholder="Mín. 8 caracteres, 1 mayúscula, 1 número"
-          helperText="Al menos 8 caracteres, una mayúscula y un número" autoComplete="new-password" required />
+          autoComplete="new-password" required />
         <button type="button" onClick={() => setShowPw(!showPw)}
           className="absolute right-3 bottom-2.5 text-white/30 hover:text-white/60 transition-colors">
           {showPw ? <EyeOff size={16} /> : <Eye size={16} />}

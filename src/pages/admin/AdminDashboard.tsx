@@ -5,10 +5,11 @@ import {
   BookOpen, ShoppingBag, TrendingUp, Plus, Edit2, Trash2,
   X, Check, ChevronDown, Package, Upload, Image as ImageIcon,
   Users, Mail, Shield, ShieldOff, Send, UserX, CheckCircle,
-  AlertCircle, RefreshCw
+  AlertCircle, RefreshCw, FileText, ExternalLink
 } from 'lucide-react'
 import Spinner from '../../components/ui/Spinner'
-import type { Book } from '../../types'
+import RichTextEditor from '../../components/ui/RichTextEditor'
+import type { Book, Article } from '../../types'
 
 // ─── Types ───────────────────────────────────────────────────
 interface AdminUser {
@@ -37,7 +38,7 @@ interface Order {
   items: { service_title: string; quantity: number; price: number }[]
 }
 
-type Tab = 'books' | 'orders' | 'users' | 'newsletter'
+type Tab = 'books' | 'orders' | 'users' | 'newsletter' | 'articles'
 
 // ─── Book Form ────────────────────────────────────────────────
 const emptyForm = {
@@ -57,6 +58,17 @@ const STATUS_ES: Record<string, string> = {
   COMPLETED: 'Completado', CANCELLED: 'Cancelado',
 }
 
+// ─── Confirm Dialog ───────────────────────────────────────────
+interface ConfirmState {
+  open: boolean
+  title: string
+  message: string
+  danger?: boolean
+  onConfirm: () => void
+}
+const DIALOG_CLOSED: ConfirmState = { open: false, title: '', message: '', onConfirm: () => {} }
+
+
 // ─── Main Component ───────────────────────────────────────────
 const AdminDashboard: React.FC = () => {
   const [tab, setTab] = useState<Tab>('books')
@@ -66,6 +78,11 @@ const AdminDashboard: React.FC = () => {
   const [subscribers, setSubscribers] = useState<Subscriber[]>([])
   const [stats, setStats] = useState({ books: 0, orders: 0, revenue: 0, users: 0 })
   const [loading, setLoading] = useState(true)
+  const [dialog, setDialog] = useState<ConfirmState>(DIALOG_CLOSED)
+  const [actionError, setActionError] = useState('')
+
+  const askConfirm = (title: string, message: string, onConfirm: () => void, danger = true) =>
+    setDialog({ open: true, title, message, danger, onConfirm })
 
   // Book form
   const [showForm, setShowForm] = useState(false)
@@ -91,11 +108,24 @@ const AdminDashboard: React.FC = () => {
   const [sending, setSending] = useState(false)
   const [sendResult, setSendResult] = useState<{ ok: boolean; msg: string } | null>(null)
 
+  // Articles
+  const [articles, setArticles] = useState<Article[]>([])
+  const [showArticleForm, setShowArticleForm] = useState(false)
+  const [editingArticle, setEditingArticle] = useState<Article | null>(null)
+  const [articleForm, setArticleForm] = useState({
+    title: '', slug: '', excerpt: '', category: 'Mentalidad',
+    content: '', pdf_url: '', cover_url: '', read_time: '5', is_published: true,
+  })
+  const [savingArticle, setSavingArticle] = useState(false)
+  const [deletingArticle, setDeletingArticle] = useState<string | null>(null)
+  const [uploadingCover, setUploadingCover] = useState(false)
+  const [coverPreview, setCoverPreview] = useState<string | null>(null)
+
   useEffect(() => { fetchAll() }, [])
 
   const fetchAll = async () => {
     setLoading(true)
-    await Promise.all([fetchBooks(), fetchOrders(), fetchUsers(), fetchSubscribers()])
+    await Promise.all([fetchBooks(), fetchOrders(), fetchUsers(), fetchSubscribers(), fetchArticles()])
     setLoading(false)
   }
 
@@ -127,6 +157,81 @@ const AdminDashboard: React.FC = () => {
     const { data, error } = await supabase.rpc('admin_get_subscribers')
     if (error) { console.error('fetchSubscribers:', error); return }
     setSubscribers((data ?? []) as Subscriber[])
+  }
+
+  const fetchArticles = async () => {
+    const { data } = await supabase
+      .from('articles').select('*').order('published_at', { ascending: false })
+    setArticles((data ?? []) as Article[])
+  }
+
+  // ── Article CRUD ──────────────────────────────────────────
+  const slugify = (s: string) =>
+    s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+      .replace(/[^a-z0-9\s-]/g, '').trim().replace(/\s+/g, '-')
+
+  const openCreateArticle = () => {
+    setEditingArticle(null)
+    setArticleForm({ title: '', slug: '', excerpt: '', category: 'Mentalidad',
+      content: '', pdf_url: '', cover_url: '', read_time: '5', is_published: true })
+    setCoverPreview(null)
+    setShowArticleForm(true)
+  }
+
+  const openEditArticle = (a: Article) => {
+    setEditingArticle(a)
+    setArticleForm({ title: a.title, slug: a.slug, excerpt: a.excerpt,
+      category: a.category, content: a.content, pdf_url: a.pdf_url ?? '',
+      cover_url: a.cover_url ?? '', read_time: String(a.read_time), is_published: a.is_published })
+    setCoverPreview(a.cover_url ?? null)
+    setShowArticleForm(true)
+  }
+
+  const handleCoverUpload = async (file: File) => {
+    if (!file) return
+    setUploadingCover(true)
+    const ext = file.name.split('.').pop()
+    const path = `articles/${Date.now()}.${ext}`
+    const { error } = await supabase.storage.from(BUCKET).upload(path, file, { upsert: true })
+    if (error) { console.error(error); setUploadingCover(false); return }
+    const { data } = supabase.storage.from(BUCKET).getPublicUrl(path)
+    setArticleForm(f => ({ ...f, cover_url: data.publicUrl }))
+    setCoverPreview(data.publicUrl)
+    setUploadingCover(false)
+  }
+
+  const saveArticle = async (e: React.FormEvent) => {
+    e.preventDefault(); setSavingArticle(true)
+    const payload = {
+      title: articleForm.title.trim(),
+      slug: articleForm.slug.trim() || slugify(articleForm.title),
+      excerpt: articleForm.excerpt.trim(),
+      category: articleForm.category,
+      content: articleForm.content.trim(),
+      cover_url: articleForm.cover_url.trim() || null,
+      pdf_url: articleForm.pdf_url.trim() || null,
+      read_time: Number(articleForm.read_time) || 5,
+      is_published: articleForm.is_published,
+    }
+    if (editingArticle) {
+      await supabase.from('articles').update(payload).eq('id', editingArticle.id)
+    } else {
+      await supabase.from('articles').insert({ ...payload, published_at: new Date().toISOString() })
+    }
+    setSavingArticle(false); setShowArticleForm(false); fetchArticles()
+  }
+
+  const deleteArticle = (id: string) => {
+    askConfirm(
+      'Eliminar artículo',
+      '¿Estás seguro? Esta acción no se puede deshacer.',
+      async () => {
+        setDialog(DIALOG_CLOSED)
+        setDeletingArticle(id)
+        await supabase.from('articles').delete().eq('id', id)
+        setDeletingArticle(null); fetchArticles()
+      }
+    )
   }
 
   // ── Book CRUD ──────────────────────────────────────────────
@@ -161,11 +266,17 @@ const AdminDashboard: React.FC = () => {
     else await supabase.from('services').insert(payload)
     setSaving(false); setShowForm(false); fetchBooks()
   }
-  const deleteBook = async (id: string) => {
-    if (!confirm('¿Eliminar este libro?')) return
-    setDeleting(id)
-    await supabase.from('services').delete().eq('id', id)
-    setDeleting(null); fetchBooks()
+  const deleteBook = (id: string) => {
+    askConfirm(
+      'Eliminar libro',
+      '¿Estás seguro? Esta acción no se puede deshacer.',
+      async () => {
+        setDialog(DIALOG_CLOSED)
+        setDeleting(id)
+        await supabase.from('services').delete().eq('id', id)
+        setDeleting(null); fetchBooks()
+      }
+    )
   }
 
   // ── Order status ──────────────────────────────────────────
@@ -176,24 +287,85 @@ const AdminDashboard: React.FC = () => {
   }
 
   // ── User management ───────────────────────────────────────
-  const handleDeleteUser = async (userId: string, userEmail: string) => {
-    if (!confirm(`¿Eliminar usuario ${userEmail}? Esta acción no se puede deshacer.`)) return
-    setDeletingUser(userId)
-    const { error } = await supabase.rpc('admin_delete_user', { p_user_id: userId })
-    if (error) alert(`Error: ${error.message}`)
-    setDeletingUser(null); fetchUsers()
+  const handleDeleteUser = (userId: string, userEmail: string) => {
+    askConfirm(
+      'Eliminar usuario',
+      `¿Estás seguro de que quieres eliminar a ${userEmail}? Esta acción no se puede deshacer.`,
+      async () => {
+        setDialog(DIALOG_CLOSED)
+        setDeletingUser(userId)
+        const { error } = await supabase.rpc('admin_delete_user', { p_user_id: userId })
+        if (error) setActionError(error.message)
+        setDeletingUser(null); fetchUsers()
+      }
+    )
   }
 
-  const handleToggleRole = async (userId: string, currentRole: string) => {
+  const handleToggleRole = (userId: string, currentRole: string) => {
     const newRole = currentRole === 'admin' ? 'user' : 'admin'
-    if (newRole === 'admin' && !confirm(`¿Dar permisos de administrador a este usuario?`)) return
-    setTogglingRole(userId)
-    const { error } = await supabase.rpc('admin_set_user_role', { p_user_id: userId, p_role: newRole })
-    if (error) alert(`Error: ${error.message}`)
-    setTogglingRole(null); fetchUsers()
+    if (newRole === 'admin') {
+      askConfirm(
+        'Dar permisos de admin',
+        '¿Dar permisos de administrador a este usuario? Tendrá acceso total al panel.',
+        async () => {
+          setDialog(DIALOG_CLOSED)
+          setTogglingRole(userId)
+          const { error } = await supabase.rpc('admin_set_user_role', { p_user_id: userId, p_role: newRole })
+          if (error) setActionError(error.message)
+          setTogglingRole(null); fetchUsers()
+        },
+        false
+      )
+    } else {
+      // Downgrade — no confirm needed, just do it
+      setTogglingRole(userId)
+      supabase.rpc('admin_set_user_role', { p_user_id: userId, p_role: newRole })
+        .then(({ error }) => {
+          if (error) setActionError(error.message)
+          setTogglingRole(null); fetchUsers()
+        })
+    }
   }
 
   // ── Newsletter ────────────────────────────────────────────
+  const invokeNewsletter = async (recipients: { email: string; name?: string }[]) => {
+    try {
+      // Let Supabase JS attach the session token automatically — do NOT pass manual header
+      const { data, error } = await supabase.functions.invoke('send-newsletter', {
+        body: { subject: nlSubject, body: nlBody, recipients },
+      })
+
+      if (error) {
+        // Try to extract the actual body from the error context
+        let detail = error.message
+        try {
+          const ctx = (error as any).context
+          if (ctx) {
+            const text = typeof ctx.json === 'function' ? await ctx.json() : ctx
+            detail = text?.error ?? text?.message ?? error.message
+          }
+        } catch { /* ignore */ }
+        setSendResult({ ok: false, msg: detail })
+      } else if (data?.error) {
+        setSendResult({ ok: false, msg: data.error })
+      } else {
+        setSendResult({ ok: true, msg: `¡Enviado a ${data.sent} destinatario${data.sent !== 1 ? 's' : ''}!${data.errors?.length ? ` (${data.errors.length} fallidos)` : ''}` })
+      }
+    } catch (err) {
+      setSendResult({ ok: false, msg: String(err) })
+    }
+    setSending(false)
+  }
+
+  const sendTest = async () => {
+    if (!nlSubject.trim() || nlBody.replace(/<[^>]*>/g, '').trim() === '') return
+    setSending(true); setSendResult(null)
+    const { data: { session } } = await supabase.auth.getSession()
+    const email = session?.user?.email
+    if (!email) { setSendResult({ ok: false, msg: 'No se encontró tu email.' }); setSending(false); return }
+    await invokeNewsletter([{ email }])
+  }
+
   const sendNewsletter = async () => {
     if (!nlSubject.trim() || !nlBody.trim()) return
     setSending(true); setSendResult(null)
@@ -207,27 +379,11 @@ const AdminDashboard: React.FC = () => {
       setSending(false); return
     }
 
-    const { data: { session } } = await supabase.auth.getSession()
-    const token = session?.access_token
-
-    try {
-      const { data, error } = await supabase.functions.invoke('send-newsletter', {
-        body: { subject: nlSubject, body: nlBody, recipients },
-        headers: { Authorization: `Bearer ${token}` },
-      })
-      if (error || data?.error) {
-        setSendResult({ ok: false, msg: error?.message ?? data?.error ?? 'Error desconocido.' })
-      } else {
-        setSendResult({ ok: true, msg: `¡Enviado correctamente a ${recipients.length} destinatarios!` })
-        setNlSubject(''); setNlBody('')
-      }
-    } catch (err) {
-      setSendResult({ ok: false, msg: String(err) })
-    }
-    setSending(false)
+    await invokeNewsletter(recipients)
   }
 
   const TABS: { key: Tab; label: string; icon: React.ElementType }[] = [
+    { key: 'articles',   label: 'Artículos',    icon: FileText    },
     { key: 'books',      label: 'Libros',       icon: BookOpen    },
     { key: 'orders',     label: 'Órdenes',      icon: ShoppingBag },
     { key: 'users',      label: 'Usuarios',     icon: Users       },
@@ -533,14 +689,11 @@ const AdminDashboard: React.FC = () => {
                         <label className="text-[10px] uppercase tracking-widest text-white/35 block mb-1.5">
                           Contenido *
                         </label>
-                        <textarea
+                        <RichTextEditor
                           value={nlBody}
-                          onChange={e => setNlBody(e.target.value)}
-                          rows={10}
-                          placeholder={`Escribe el contenido del email...\n\nCada párrafo separado por una línea en blanco se mostrará como un bloque de texto.\n\nPuedes incluir reflexiones, novedades sobre tus libros, o cualquier mensaje para tus lectores.`}
-                          className="w-full px-4 py-3 bg-[#2c2b2b] border border-white/[0.09] rounded-xl text-white text-sm outline-none focus:border-[#f26822]/45 resize-none placeholder:text-white/20 leading-relaxed"
+                          onChange={html => setNlBody(html)}
+                          placeholder="Escribe el contenido del email aquí…"
                         />
-                        <p className="text-white/20 text-[10px] mt-1.5">{nlBody.length} caracteres</p>
                       </div>
 
                       {/* Result message */}
@@ -562,13 +715,22 @@ const AdminDashboard: React.FC = () => {
                         )}
                       </AnimatePresence>
 
-                      {/* Send button */}
-                      <button
-                        onClick={sendNewsletter}
-                        disabled={sending || !nlSubject.trim() || !nlBody.trim()}
-                        className="w-full flex items-center justify-center gap-2 bg-[#f26822] hover:bg-[#d45c1a] text-white font-semibold py-3 rounded-xl transition-all duration-200 shadow-lg shadow-[#f26822]/20 disabled:opacity-50 disabled:pointer-events-none">
-                        {sending ? <><Spinner size="sm" /> Enviando...</> : <><Send size={15} /> Enviar newsletter</>}
-                      </button>
+                      {/* Buttons */}
+                      <div className="flex gap-3">
+                        <button
+                          onClick={sendTest}
+                          disabled={sending || !nlSubject.trim() || nlBody.replace(/<[^>]*>/g, '').trim() === ''}
+                          className="flex-1 flex items-center justify-center gap-2 border border-white/20 hover:border-[#f26822]/50 text-white/60 hover:text-white font-medium py-3 rounded-xl transition-all duration-200 disabled:opacity-40 disabled:pointer-events-none text-sm">
+                          {sending ? <Spinner size="sm" /> : <Send size={14} />}
+                          Probar (mi email)
+                        </button>
+                        <button
+                          onClick={sendNewsletter}
+                          disabled={sending || !nlSubject.trim() || !nlBody.trim() || nlBody.replace(/<[^>]*>/g, '').trim() === ''}
+                          className="flex-1 flex items-center justify-center gap-2 bg-[#f26822] hover:bg-[#d45c1a] text-white font-semibold py-3 rounded-xl transition-all duration-200 shadow-lg shadow-[#f26822]/20 disabled:opacity-50 disabled:pointer-events-none text-sm">
+                          {sending ? <><Spinner size="sm" /> Enviando...</> : <><Send size={15} /> Enviar a todos</>}
+                        </button>
+                      </div>
                     </div>
                   </div>
 
@@ -618,9 +780,214 @@ const AdminDashboard: React.FC = () => {
                 </div>
               </motion.div>
             )}
+
+            {/* ── ARTICLES TAB ── */}
+            {tab === 'articles' && (
+              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+                <div className="flex justify-end mb-5">
+                  <button onClick={openCreateArticle}
+                    className="flex items-center gap-2 bg-[#f26822] hover:bg-[#d45c1a] text-white text-sm font-semibold px-5 py-2.5 rounded-xl transition-colors shadow-lg shadow-[#f26822]/20">
+                    <Plus size={15} /> Nuevo artículo
+                  </button>
+                </div>
+
+                <div className="space-y-3">
+                  {articles.map(a => (
+                    <div key={a.id}
+                      className="bg-[#1a1b1c] border border-white/[0.07] rounded-2xl p-5 flex items-center gap-5">
+                      <div className="w-10 h-10 bg-[#f26822]/10 border border-[#f26822]/20 rounded-xl flex items-center justify-center flex-shrink-0">
+                        <FileText size={16} className="text-[#f26822]" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2">
+                          <p className="text-white font-semibold text-sm truncate">{a.title}</p>
+                          {!a.is_published && (
+                            <span className="text-[10px] px-2 py-0.5 bg-white/[0.06] text-white/30 rounded-md border border-white/[0.08]">
+                              Borrador
+                            </span>
+                          )}
+                        </div>
+                        <p className="text-white/30 text-xs mt-0.5">{a.category} · {a.read_time} min</p>
+                        <p className="text-white/25 text-xs mt-0.5 line-clamp-1">{a.excerpt}</p>
+                      </div>
+                      <div className="flex items-center gap-2 flex-shrink-0">
+                        <a href={`/articulos/${a.slug}`} target="_blank" rel="noopener noreferrer"
+                          className="w-8 h-8 bg-white/[0.04] hover:bg-white/[0.09] border border-white/[0.08] rounded-lg flex items-center justify-center text-white/30 hover:text-white transition-all">
+                          <ExternalLink size={12} />
+                        </a>
+                        <button onClick={() => openEditArticle(a)}
+                          className="w-8 h-8 bg-white/[0.05] hover:bg-white/[0.1] border border-white/[0.08] rounded-lg flex items-center justify-center text-white/50 hover:text-white transition-all">
+                          <Edit2 size={13} />
+                        </button>
+                        <button onClick={() => deleteArticle(a.id)} disabled={deletingArticle === a.id}
+                          className="w-8 h-8 bg-red-500/10 hover:bg-red-500/20 border border-red-500/20 rounded-lg flex items-center justify-center text-red-400 transition-all">
+                          {deletingArticle === a.id ? <Spinner size="sm" /> : <Trash2 size={13} />}
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                  {articles.length === 0 && (
+                    <div className="text-center py-16 text-white/25">
+                      <FileText size={32} className="mx-auto mb-3 opacity-30" strokeWidth={1} />
+                      <p>No hay artículos. Crea el primero.</p>
+                    </div>
+                  )}
+                </div>
+              </motion.div>
+            )}
           </>
         )}
       </div>
+
+      {/* ── Article Form Modal ── */}
+      <AnimatePresence>
+        {showArticleForm && (
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+            onClick={(e) => e.target === e.currentTarget && setShowArticleForm(false)}>
+            <motion.div initial={{ opacity: 0, scale: 0.95, y: 20 }} animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }} transition={{ type: 'spring', stiffness: 300, damping: 28 }}
+              className="bg-[#1a1b1c] border border-white/[0.09] rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+
+              <div className="flex items-center justify-between p-6 border-b border-white/[0.07]">
+                <h2 className="text-white font-bold text-lg">
+                  {editingArticle ? 'Editar artículo' : 'Nuevo artículo'}
+                </h2>
+                <button onClick={() => setShowArticleForm(false)}
+                  className="w-8 h-8 bg-white/[0.05] hover:bg-white/[0.1] rounded-lg flex items-center justify-center text-white/50 hover:text-white transition-all">
+                  <X size={14} />
+                </button>
+              </div>
+
+              <form onSubmit={saveArticle} className="p-6 space-y-4">
+                {/* Title */}
+                <div>
+                  <label className="text-[10px] uppercase tracking-widest text-white/35 block mb-1.5">Título *</label>
+                  <input required value={articleForm.title}
+                    onChange={e => setArticleForm(f => ({
+                      ...f, title: e.target.value,
+                      slug: f.slug || slugify(e.target.value)
+                    }))}
+                    className="w-full px-4 py-2.5 bg-[#2c2b2b] border border-white/[0.09] rounded-xl text-white text-sm outline-none focus:border-[#f26822]/45"
+                    placeholder="El título del artículo" />
+                </div>
+
+                {/* Slug */}
+                <div>
+                  <label className="text-[10px] uppercase tracking-widest text-white/35 block mb-1.5">Slug (URL)</label>
+                  <input value={articleForm.slug}
+                    onChange={e => setArticleForm(f => ({ ...f, slug: e.target.value }))}
+                    className="w-full px-4 py-2.5 bg-[#2c2b2b] border border-white/[0.09] rounded-xl text-white/60 text-sm outline-none focus:border-[#f26822]/45 font-mono"
+                    placeholder="auto-generado-del-titulo" />
+                </div>
+
+                {/* Category + read time */}
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="text-[10px] uppercase tracking-widest text-white/35 block mb-1.5">Categoría</label>
+                    <select value={articleForm.category}
+                      onChange={e => setArticleForm(f => ({ ...f, category: e.target.value }))}
+                      className="w-full px-4 py-2.5 bg-[#2c2b2b] border border-white/[0.09] rounded-xl text-white text-sm outline-none focus:border-[#f26822]/45">
+                      {['Mentalidad','Negocios','Espiritualidad','General'].map(c => (
+                        <option key={c} value={c}>{c}</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div>
+                    <label className="text-[10px] uppercase tracking-widest text-white/35 block mb-1.5">Tiempo de lectura (min)</label>
+                    <input type="number" min="1" max="60" value={articleForm.read_time}
+                      onChange={e => setArticleForm(f => ({ ...f, read_time: e.target.value }))}
+                      className="w-full px-4 py-2.5 bg-[#2c2b2b] border border-white/[0.09] rounded-xl text-white text-sm outline-none focus:border-[#f26822]/45" />
+                  </div>
+                </div>
+
+                {/* Excerpt */}
+                <div>
+                  <label className="text-[10px] uppercase tracking-widest text-white/35 block mb-1.5">Extracto *</label>
+                  <textarea required value={articleForm.excerpt}
+                    onChange={e => setArticleForm(f => ({ ...f, excerpt: e.target.value }))}
+                    rows={2}
+                    className="w-full px-4 py-2.5 bg-[#2c2b2b] border border-white/[0.09] rounded-xl text-white text-sm outline-none focus:border-[#f26822]/45 resize-none"
+                    placeholder="Frase corta que aparece en la lista..." />
+                </div>
+
+                {/* Content */}
+                <div>
+                  <label className="text-[10px] uppercase tracking-widest text-white/35 block mb-1.5">
+                    Contenido *
+                  </label>
+                  <RichTextEditor
+                    value={articleForm.content}
+                    onChange={html => setArticleForm(f => ({ ...f, content: html }))}
+                    placeholder="Escribe el contenido del artículo aquí…"
+                  />
+                </div>
+
+                {/* Cover image */}
+                <div>
+                  <label className="text-[10px] uppercase tracking-widest text-white/35 block mb-1.5">Imagen de portada</label>
+                  {coverPreview && (
+                    <div className="relative mb-2 w-full h-36 rounded-xl overflow-hidden border border-white/[0.09]">
+                      <img src={coverPreview} alt="cover" className="w-full h-full object-cover" />
+                      <button type="button"
+                        onClick={() => { setCoverPreview(null); setArticleForm(f => ({ ...f, cover_url: '' })) }}
+                        className="absolute top-2 right-2 w-6 h-6 bg-black/70 rounded-full flex items-center justify-center text-white hover:bg-red-500/80 transition-colors">
+                        <X size={11} />
+                      </button>
+                    </div>
+                  )}
+                  <label className={`flex items-center gap-3 px-4 py-3 bg-[#2c2b2b] border border-dashed border-white/[0.15] hover:border-[#f26822]/40 rounded-xl cursor-pointer transition-colors ${uploadingCover ? 'opacity-60 pointer-events-none' : ''}`}>
+                    {uploadingCover
+                      ? <><Spinner size="sm" /><span className="text-white/40 text-sm">Subiendo...</span></>
+                      : <><Upload size={15} className="text-white/40" /><span className="text-white/40 text-sm">Subir imagen de portada</span></>
+                    }
+                    <input type="file" accept="image/*" className="hidden"
+                      onChange={e => { const f = e.target.files?.[0]; if (f) handleCoverUpload(f) }} />
+                  </label>
+                  <div className="flex items-center gap-2 mt-2">
+                    <ImageIcon size={12} className="text-white/20 flex-shrink-0" />
+                    <input value={articleForm.cover_url}
+                      onChange={e => { setArticleForm(f => ({ ...f, cover_url: e.target.value })); setCoverPreview(e.target.value || null) }}
+                      className="flex-1 px-3 py-1.5 bg-transparent border-b border-white/[0.07] text-white/40 text-xs outline-none focus:border-[#f26822]/30 placeholder:text-white/20"
+                      placeholder="O pega una URL de imagen..." />
+                  </div>
+                </div>
+
+                {/* PDF URL */}
+                <div>
+                  <label className="text-[10px] uppercase tracking-widest text-white/35 block mb-1.5">URL de PDF (opcional)</label>
+                  <input value={articleForm.pdf_url}
+                    onChange={e => setArticleForm(f => ({ ...f, pdf_url: e.target.value }))}
+                    className="w-full px-4 py-2.5 bg-[#2c2b2b] border border-white/[0.09] rounded-xl text-white/60 text-sm outline-none focus:border-[#f26822]/45"
+                    placeholder="https://..." />
+                </div>
+
+                {/* Published toggle */}
+                <label className="flex items-center gap-3 cursor-pointer">
+                  <div
+                    onClick={() => setArticleForm(f => ({ ...f, is_published: !f.is_published }))}
+                    className={`w-10 h-5 rounded-full transition-colors flex items-center px-0.5 ${articleForm.is_published ? 'bg-[#f26822]' : 'bg-white/10'}`}>
+                    <div className={`w-4 h-4 rounded-full bg-white shadow transition-transform ${articleForm.is_published ? 'translate-x-5' : 'translate-x-0'}`} />
+                  </div>
+                  <span className="text-white/60 text-sm">{articleForm.is_published ? 'Publicado' : 'Borrador'}</span>
+                </label>
+
+                <div className="flex gap-3 pt-2">
+                  <button type="button" onClick={() => setShowArticleForm(false)}
+                    className="flex-1 py-3 border border-white/[0.09] text-white/50 hover:text-white rounded-xl text-sm font-medium transition-colors">
+                    Cancelar
+                  </button>
+                  <button type="submit" disabled={savingArticle}
+                    className="flex-1 py-3 bg-[#f26822] hover:bg-[#d45c1a] text-white rounded-xl text-sm font-semibold transition-colors flex items-center justify-center gap-2 shadow-lg shadow-[#f26822]/20">
+                    {savingArticle ? <Spinner size="sm" /> : <Check size={15} />}
+                    {savingArticle ? 'Guardando...' : editingArticle ? 'Guardar cambios' : 'Publicar artículo'}
+                  </button>
+                </div>
+              </form>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* ── Book Form Modal ── */}
       <AnimatePresence>
@@ -721,6 +1088,75 @@ const AdminDashboard: React.FC = () => {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* ── Confirm Dialog ── */}
+      <AnimatePresence>
+        {dialog.open && (
+          <motion.div
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
+            onClick={() => setDialog(DIALOG_CLOSED)}
+          >
+            <motion.div
+              initial={{ opacity: 0, scale: 0.92, y: 16 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.92, y: 16 }}
+              transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
+              className="w-full max-w-sm bg-[#1a1b1c] border border-white/[0.09] rounded-2xl p-6 shadow-2xl"
+              onClick={e => e.stopPropagation()}
+            >
+              {/* Icon */}
+              <div className={`w-11 h-11 rounded-xl flex items-center justify-center mb-4 ${
+                dialog.danger ? 'bg-red-500/10 border border-red-500/20' : 'bg-[#f26822]/10 border border-[#f26822]/20'
+              }`}>
+                {dialog.danger
+                  ? <AlertCircle size={20} className="text-red-400" />
+                  : <Shield size={20} className="text-[#f26822]" />
+                }
+              </div>
+
+              <h3 className="text-white font-bold text-lg mb-2">{dialog.title}</h3>
+              <p className="text-white/45 text-sm leading-relaxed mb-6">{dialog.message}</p>
+
+              <div className="flex gap-3">
+                <button
+                  onClick={() => setDialog(DIALOG_CLOSED)}
+                  className="flex-1 py-2.5 rounded-xl border border-white/[0.09] text-white/50 hover:text-white hover:border-white/20 text-sm font-medium transition-all"
+                >
+                  Cancelar
+                </button>
+                <button
+                  onClick={dialog.onConfirm}
+                  className={`flex-1 py-2.5 rounded-xl text-sm font-semibold transition-all ${
+                    dialog.danger
+                      ? 'bg-red-500 hover:bg-red-600 text-white'
+                      : 'bg-[#f26822] hover:bg-[#d45c1a] text-white'
+                  }`}
+                >
+                  {dialog.danger ? 'Sí, eliminar' : 'Confirmar'}
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* ── Action error toast ── */}
+      <AnimatePresence>
+        {actionError && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 20 }}
+            className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 flex items-center gap-3 bg-red-500/10 border border-red-500/25 text-red-400 text-sm px-5 py-3 rounded-xl shadow-xl backdrop-blur-md"
+          >
+            <AlertCircle size={15} />
+            {actionError}
+            <button onClick={() => setActionError('')} className="ml-2 text-red-400/50 hover:text-red-400">
+              <X size={13} />
+            </button>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
     </div>
   )
 }

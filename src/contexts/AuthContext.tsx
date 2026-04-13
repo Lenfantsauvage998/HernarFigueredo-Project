@@ -23,7 +23,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return () => subscription.unsubscribe()
   }, [])
 
-  const loadUserProfile = async (userId: string, email: string) => {
+  const loadUserProfile = async (userId: string, email: string, attempt = 1) => {
     try {
       const { data: profile, error } = await supabase
         .from('profiles')
@@ -31,7 +31,25 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         .eq('id', userId)
         .single()
 
-      if (error) throw error
+      // Profile row may not exist yet if the trigger hasn't fired (new signup race).
+      // Retry up to 5 times with 400 ms delay before giving up.
+      if (error) {
+        if (attempt < 5) {
+          setTimeout(() => loadUserProfile(userId, email, attempt + 1), 400)
+          return
+        }
+        // Fallback: use metadata name, treat as regular user so they aren't locked out
+        const meta = (await supabase.auth.getUser()).data.user?.user_metadata
+        const user: User = {
+          id: userId,
+          name: meta?.name ?? meta?.full_name ?? email.split('@')[0],
+          role: 'user',
+          email,
+          created_at: new Date().toISOString(),
+        }
+        setUser(user)
+        return
+      }
 
       const user: User = {
         id: profile.id,
@@ -43,7 +61,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setUser(user)
     } catch (err) {
       console.error('Failed to load user profile:', err)
-      clearAuth()
+      if (attempt < 5) {
+        setTimeout(() => loadUserProfile(userId, email, attempt + 1), 400)
+      } else {
+        clearAuth()
+      }
     }
   }
 
