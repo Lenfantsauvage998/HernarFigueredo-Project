@@ -18,8 +18,8 @@ const CopyId: React.FC<{ id: string }> = ({ id }) => {
     setTimeout(() => setCopied(false), 2000)
   }
   return (
-    <button onClick={handle} className="ml-1 p-0.5 rounded hover:bg-white/10 text-white/30 hover:text-[#c4501a] transition-colors" title="Copiar ID">
-      {copied ? <Check size={12} className="text-[#c4501a]" /> : <Copy size={12} />}
+    <button onClick={handle} className="ml-1 p-0.5 rounded hover:bg-white/10 text-white/30 hover:text-[#f26822] transition-colors" title="Copiar ID">
+      {copied ? <Check size={12} className="text-[#f26822]" /> : <Copy size={12} />}
     </button>
   )
 }
@@ -64,7 +64,7 @@ const UserDashboard: React.FC = () => {
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="mb-10">
-          <p className="text-[#c4501a] text-sm font-semibold uppercase tracking-widest mb-2">Mi cuenta</p>
+          <p className="text-[#f26822] text-sm font-semibold uppercase tracking-widest mb-2">Mi cuenta</p>
           <h1 className="text-3xl font-bold text-white">
             Bienvenido, {user?.name?.split(' ')[0]}
           </h1>
@@ -111,7 +111,7 @@ const UserDashboard: React.FC = () => {
             <h2 className="font-semibold text-white">Mis órdenes</h2>
             <Link
               to="/libros"
-              className="flex items-center gap-1 text-sm text-[#c4501a] hover:text-[#d45c1a] transition-colors font-semibold"
+              className="flex items-center gap-1 text-sm text-[#f26822] hover:text-[#d45c1a] transition-colors font-semibold"
             >
               Comprar más <ArrowRight size={14} />
             </Link>
@@ -130,7 +130,7 @@ const UserDashboard: React.FC = () => {
               <p className="text-white/30 text-sm mt-1 mb-6">Empieza explorando los libros de Hernan</p>
               <Link
                 to="/libros"
-                className="inline-flex items-center gap-2 bg-[#c4501a] text-white font-semibold px-6 py-2.5 rounded-xl hover:bg-[#d45c1a] transition-colors text-sm"
+                className="inline-flex items-center gap-2 bg-[#f26822] text-white font-semibold px-6 py-2.5 rounded-xl hover:bg-[#d45c1a] transition-colors text-sm"
               >
                 Ver libros
               </Link>
@@ -178,7 +178,7 @@ const UserDashboard: React.FC = () => {
                       <td className="px-5 py-4">
                         <button
                           onClick={() => setSelectedOrder(order)}
-                          className="text-xs font-semibold text-[#c4501a] hover:text-[#d45c1a] transition-colors"
+                          className="text-xs font-semibold text-[#f26822] hover:text-[#d45c1a] transition-colors"
                         >
                           Detalles
                         </button>
@@ -219,8 +219,8 @@ const UserDashboard: React.FC = () => {
             <div className="space-y-3">
               {selectedOrder.items?.map((item) => (
                 <div key={item.id} className="flex items-center gap-4 p-4 bg-white/5 rounded-xl">
-                  <div className="w-12 h-12 bg-[#c4501a]/10 rounded-lg flex items-center justify-center flex-shrink-0">
-                    <BookOpen size={18} className="text-[#c4501a]" />
+                  <div className="w-12 h-12 bg-[#f26822]/10 rounded-lg flex items-center justify-center flex-shrink-0">
+                    <BookOpen size={18} className="text-[#f26822]" />
                   </div>
                   <div className="flex-1">
                     <p className="text-sm font-semibold text-white">{item.service?.title || 'Libro'}</p>
@@ -237,7 +237,7 @@ const UserDashboard: React.FC = () => {
             <div className="border-t border-white/10 pt-4">
               <div className="flex justify-between font-bold">
                 <span className="text-white">Total</span>
-                <span className="text-[#c4501a] text-lg">
+                <span className="text-[#f26822] text-lg">
                   ${Number(selectedOrder.total_amount).toLocaleString('es-CO')} COP
                 </span>
               </div>

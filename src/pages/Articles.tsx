@@ -9,12 +9,12 @@ import Spinner from '../components/ui/Spinner'
 
 // ── Category colour map ───────────────────────────────────────
 const CAT_COLOR: Record<string, string> = {
-  Mentalidad:     '#c4501a',
+  Mentalidad:     '#f26822',
   Negocios:       '#e8a857',
   Espiritualidad: '#9b8ea8',
   General:        '#6b7280',
 }
-function catColor(cat: string) { return CAT_COLOR[cat] ?? '#c4501a' }
+function catColor(cat: string) { return CAT_COLOR[cat] ?? '#f26822' }
 
 const BIO_PHOTO = '/assets/hernan.png'
 
@@ -82,8 +82,8 @@ const Articles: React.FC = () => {
       <div className="pt-28 pb-12 px-4 max-w-3xl mx-auto">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
           <div className="flex items-center gap-3 mb-4">
-            <div className="h-px w-8 bg-[#c4501a]" />
-            <span className="text-[#c4501a] text-xs font-bold uppercase tracking-[0.3em]">Artículos</span>
+            <div className="h-px w-8 bg-[#f26822]" />
+            <span className="text-[#f26822] text-xs font-bold uppercase tracking-[0.3em]">Artículos</span>
           </div>
           <h1 className="text-4xl sm:text-5xl font-bold text-white leading-tight">
             Ideas que valen<br className="hidden sm:block" /> tu tiempo.
@@ -95,7 +95,7 @@ const Articles: React.FC = () => {
       </div>
 
       <div className="max-w-3xl mx-auto px-4">
-        <div className="h-px bg-gradient-to-r from-[#c4501a]/30 via-white/10 to-transparent" />
+        <div className="h-px bg-gradient-to-r from-[#f26822]/30 via-white/10 to-transparent" />
       </div>
 
       {/* ── Article list ─────────────────────────────────── */}
@@ -133,8 +133,8 @@ const Articles: React.FC = () => {
           <div className="flex items-end justify-between mb-8">
             <div>
               <div className="flex items-center gap-3 mb-2">
-                <div className="h-px w-6 bg-[#c4501a]" />
-                <span className="text-[#c4501a] text-[10px] font-bold uppercase tracking-[0.3em]">
+                <div className="h-px w-6 bg-[#f26822]" />
+                <span className="text-[#f26822] text-[10px] font-bold uppercase tracking-[0.3em]">
                   Si los artículos te resonaron
                 </span>
               </div>
@@ -144,7 +144,7 @@ const Articles: React.FC = () => {
               </p>
             </div>
             <Link to="/libros"
-              className="hidden sm:flex items-center gap-2 text-white/40 hover:text-[#c4501a] text-xs font-medium transition-colors group flex-shrink-0 ml-4">
+              className="hidden sm:flex items-center gap-2 text-white/40 hover:text-[#f26822] text-xs font-medium transition-colors group flex-shrink-0 ml-4">
               Ver todos
               <ArrowRight size={13} className="group-hover:translate-x-0.5 transition-transform" />
             </Link>
@@ -158,23 +158,23 @@ const Articles: React.FC = () => {
                   initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }} transition={{ delay: i * 0.08 }}>
                   <Link to="/libros"
-                    className="group flex items-center gap-4 bg-[#1a1b1c] border border-white/[0.07] hover:border-[#c4501a]/30 rounded-2xl p-4 transition-all duration-200">
+                    className="group flex items-center gap-4 bg-[#1a1b1c] border border-white/[0.07] hover:border-[#f26822]/30 rounded-2xl p-4 transition-all duration-200">
                     {/* Cover */}
-                    <div className="w-14 h-20 rounded-xl overflow-hidden flex-shrink-0 bg-[#c4501a]/10 border border-[#c4501a]/20 flex items-center justify-center">
+                    <div className="w-14 h-20 rounded-xl overflow-hidden flex-shrink-0 bg-[#f26822]/10 border border-[#f26822]/20 flex items-center justify-center">
                       {book.image_url
                         ? <img src={book.image_url} alt={book.title} className="w-full h-full object-cover" />
-                        : <BookOpen size={18} className="text-[#c4501a]/60" />
+                        : <BookOpen size={18} className="text-[#f26822]/60" />
                       }
                     </div>
                     <div className="flex-1 min-w-0">
                       <p className="text-white font-semibold text-sm leading-snug line-clamp-2 group-hover:text-white transition-colors">
                         {book.title}
                       </p>
-                      <p className="text-[#c4501a] text-xs font-bold mt-1.5">
+                      <p className="text-[#f26822] text-xs font-bold mt-1.5">
                         ${book.price.toLocaleString('es-CO')} COP
                       </p>
                     </div>
-                    <ArrowRight size={14} className="text-white/20 group-hover:text-[#c4501a] flex-shrink-0 transition-colors" />
+                    <ArrowRight size={14} className="text-white/20 group-hover:text-[#f26822] flex-shrink-0 transition-colors" />
                   </Link>
                 </motion.div>
               ))}
@@ -182,22 +182,22 @@ const Articles: React.FC = () => {
           ) : (
             /* Fallback if books not loaded yet */
             <Link to="/libros"
-              className="group flex items-center justify-between bg-[#1a1b1c] border border-white/[0.07] hover:border-[#c4501a]/30 rounded-2xl p-5 mb-6 transition-all duration-200">
+              className="group flex items-center justify-between bg-[#1a1b1c] border border-white/[0.07] hover:border-[#f26822]/30 rounded-2xl p-5 mb-6 transition-all duration-200">
               <div className="flex items-center gap-4">
-                <div className="w-10 h-10 bg-[#c4501a]/10 border border-[#c4501a]/20 rounded-xl flex items-center justify-center">
-                  <BookOpen size={18} className="text-[#c4501a]" />
+                <div className="w-10 h-10 bg-[#f26822]/10 border border-[#f26822]/20 rounded-xl flex items-center justify-center">
+                  <BookOpen size={18} className="text-[#f26822]" />
                 </div>
                 <div>
                   <p className="text-white font-semibold text-sm">Explorar los libros</p>
                   <p className="text-white/35 text-xs">Contenido completo, sin límites</p>
                 </div>
               </div>
-              <ArrowRight size={14} className="text-white/25 group-hover:text-[#c4501a] transition-colors" />
+              <ArrowRight size={14} className="text-white/25 group-hover:text-[#f26822] transition-colors" />
             </Link>
           )}
 
           <Link to="/libros"
-            className="sm:hidden flex items-center justify-center gap-2 border border-white/[0.1] hover:border-[#c4501a]/40 text-white/50 hover:text-white text-sm font-medium px-5 py-3 rounded-xl transition-all">
+            className="sm:hidden flex items-center justify-center gap-2 border border-white/[0.1] hover:border-[#f26822]/40 text-white/50 hover:text-white text-sm font-medium px-5 py-3 rounded-xl transition-all">
             Ver todos los libros <ArrowRight size={14} />
           </Link>
         </motion.div>
@@ -217,13 +217,13 @@ const Articles: React.FC = () => {
                 <img src={BIO_PHOTO} alt="Hernan Figueredo"
                   className="w-20 h-20 rounded-2xl object-cover object-top border border-white/10" />
               ) : (
-                <div className="w-20 h-20 rounded-2xl bg-[#c4501a]/10 border border-[#c4501a]/20 flex items-center justify-center">
-                  <span className="text-[#c4501a] text-2xl font-bold">H</span>
+                <div className="w-20 h-20 rounded-2xl bg-[#f26822]/10 border border-[#f26822]/20 flex items-center justify-center">
+                  <span className="text-[#f26822] text-2xl font-bold">H</span>
                 </div>
               )}
             </div>
             <div>
-              <p className="text-[#c4501a] text-xs font-bold uppercase tracking-[0.25em] mb-2">
+              <p className="text-[#f26822] text-xs font-bold uppercase tracking-[0.25em] mb-2">
                 Hernan Figueredo
               </p>
               <p className="text-white/70 text-base leading-relaxed max-w-lg">
@@ -232,7 +232,7 @@ const Articles: React.FC = () => {
                 y programas de mentoría.
               </p>
               <button onClick={() => navigate('/inicio')}
-                className="mt-4 flex items-center gap-2 text-sm text-white/40 hover:text-[#c4501a] transition-colors group">
+                className="mt-4 flex items-center gap-2 text-sm text-white/40 hover:text-[#f26822] transition-colors group">
                 Conocer más
                 <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
               </button>
@@ -252,7 +252,7 @@ const Articles: React.FC = () => {
           <div className="text-center">
             <p className="text-white/25 text-xs uppercase tracking-widest mb-5">¿Quieres saber más?</p>
             <Link to="/inicio"
-              className="inline-flex items-center gap-3 border border-white/[0.12] hover:border-[#c4501a]/50 text-white/60 hover:text-white px-7 py-3.5 rounded-xl text-sm font-medium transition-all duration-200 group">
+              className="inline-flex items-center gap-3 border border-white/[0.12] hover:border-[#f26822]/50 text-white/60 hover:text-white px-7 py-3.5 rounded-xl text-sm font-medium transition-all duration-200 group">
               Ver sitio completo
               <ArrowRight size={15} className="group-hover:translate-x-1 transition-transform" />
             </Link>
@@ -313,7 +313,7 @@ const ArticleRow: React.FC<{ article: Article }> = ({ article }) => {
               <Download size={11} /> Descargable
             </span>
           )}
-          <span className="ml-auto flex items-center gap-1 text-white/25 group-hover:text-[#c4501a] text-xs font-medium transition-colors">
+          <span className="ml-auto flex items-center gap-1 text-white/25 group-hover:text-[#f26822] text-xs font-medium transition-colors">
             Leer <ArrowRight size={12} className="group-hover:translate-x-0.5 transition-transform" />
           </span>
         </div>

@@ -63,10 +63,10 @@ const Navbar: React.FC = () => {
               to="/"
               className="flex items-center gap-3 group"
             >
-              <div className="w-8 h-8 rounded-lg bg-[#c4501a] flex items-center justify-center flex-shrink-0 group-hover:bg-[#b8461a] transition-colors">
+              <div className="w-8 h-8 rounded-lg bg-[#f26822] flex items-center justify-center flex-shrink-0 group-hover:bg-[#b8461a] transition-colors">
                 <span className="text-white font-bold text-base leading-none" style={{ fontFamily: 'Georgia, serif' }}>H</span>
               </div>
-              <span className="text-white font-bold tracking-widest uppercase text-sm md:text-base group-hover:text-[#c4501a] transition-colors">
+              <span className="text-white font-bold tracking-widest uppercase text-sm md:text-base group-hover:text-[#f26822] transition-colors">
                 Hernan Figueredo
               </span>
             </Link>
@@ -77,8 +77,8 @@ const Navbar: React.FC = () => {
                 <Link
                   key={link.to}
                   to={link.to}
-                  className={`text-sm font-medium transition-colors hover:text-[#c4501a] ${
-                    location.pathname === link.to ? 'text-[#c4501a]' : 'text-white/80'
+                  className={`text-sm font-medium transition-colors hover:text-[#f26822] ${
+                    location.pathname === link.to ? 'text-[#f26822]' : 'text-white/80'
                   }`}
                 >
                   {link.label}
@@ -96,7 +96,7 @@ const Navbar: React.FC = () => {
               >
                 <ShoppingCart size={20} />
                 {itemCount > 0 && (
-                  <span className="absolute -top-1 -right-1 w-5 h-5 bg-[#c4501a] text-white text-xs font-bold rounded-full flex items-center justify-center">
+                  <span className="absolute -top-1 -right-1 w-5 h-5 bg-[#f26822] text-white text-xs font-bold rounded-full flex items-center justify-center">
                     {itemCount > 9 ? '9+' : itemCount}
                   </span>
                 )}
@@ -109,7 +109,7 @@ const Navbar: React.FC = () => {
                     onClick={() => setDropdownOpen(!dropdownOpen)}
                     className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-white/10 transition-colors text-white"
                   >
-                    <div className="w-7 h-7 bg-[#c4501a] rounded-full flex items-center justify-center">
+                    <div className="w-7 h-7 bg-[#f26822] rounded-full flex items-center justify-center">
                       <span className="text-white text-xs font-bold">
                         {user.name.charAt(0).toUpperCase()}
                       </span>
@@ -128,9 +128,9 @@ const Navbar: React.FC = () => {
                         <Link
                           to="/admin"
                           onClick={() => setDropdownOpen(false)}
-                          className="flex items-center gap-3 px-4 py-2 text-sm text-[#c4501a] hover:bg-[#c4501a]/10 transition-colors"
+                          className="flex items-center gap-3 px-4 py-2 text-sm text-[#f26822] hover:bg-[#f26822]/10 transition-colors"
                         >
-                          <Shield size={15} className="text-[#c4501a]" />
+                          <Shield size={15} className="text-[#f26822]" />
                           Panel admin
                         </Link>
                       )}
@@ -140,7 +140,7 @@ const Navbar: React.FC = () => {
                           onClick={() => setDropdownOpen(false)}
                           className="flex items-center gap-3 px-4 py-2 text-sm text-white/80 hover:bg-white/10 hover:text-white transition-colors"
                         >
-                          <LayoutDashboard size={15} className="text-[#c4501a]" />
+                          <LayoutDashboard size={15} className="text-[#f26822]" />
                           Mis órdenes
                         </Link>
                       )}
@@ -157,7 +157,7 @@ const Navbar: React.FC = () => {
               ) : (
                 <Link
                   to="/auth"
-                  className="hidden md:flex items-center gap-2 border border-white/20 hover:border-[#c4501a] hover:text-[#c4501a] text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors"
+                  className="hidden md:flex items-center gap-2 border border-white/20 hover:border-[#f26822] hover:text-[#f26822] text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors"
                 >
                   <User size={15} />
                   Ingresar
@@ -210,7 +210,7 @@ const Navbar: React.FC = () => {
                 <Link
                   to="/auth"
                   onClick={() => setMobileOpen(false)}
-                  className="block px-4 py-3 rounded-lg text-sm font-semibold text-white bg-[#c4501a] text-center"
+                  className="block px-4 py-3 rounded-lg text-sm font-semibold text-white bg-[#f26822] text-center"
                 >
                   Ingresar
                 </Link>

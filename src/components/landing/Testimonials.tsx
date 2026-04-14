@@ -67,7 +67,7 @@ const Testimonials: React.FC = () => {
   return (
     <section className="bg-[#2c2b2b] py-24 relative overflow-hidden">
       {/* Subtle glow */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[400px] bg-[#c4501a] opacity-[0.03] rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[400px] bg-[#f26822] opacity-[0.03] rounded-full blur-3xl pointer-events-none" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         {/* Header */}
@@ -78,7 +78,7 @@ const Testimonials: React.FC = () => {
           viewport={{ once: true }}
           className="flex flex-col items-center max-w-xl mx-auto text-center mb-16"
         >
-          <div className="border border-[#c4501a]/30 text-[#c4501a] text-xs font-semibold uppercase tracking-widest py-1.5 px-4 rounded-full mb-5">
+          <div className="border border-[#f26822]/30 text-[#f26822] text-xs font-semibold uppercase tracking-widest py-1.5 px-4 rounded-full mb-5">
             Testimonios
           </div>
           <h2 className="text-4xl md:text-5xl font-bold text-white tracking-tight mb-4">

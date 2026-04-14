@@ -21,7 +21,7 @@ const BookDetailModal: React.FC<BookDetailModalProps> = ({ book, onClose }) => {
       <div className="flex flex-col md:flex-row gap-8">
         {/* Cover */}
         <div className="w-full md:w-48 flex-shrink-0">
-          <div className="h-64 md:h-full min-h-48 bg-gradient-to-br from-[#c4501a]/10 to-[#2c2b2b] rounded-xl overflow-hidden border border-white/10">
+          <div className="h-64 md:h-full min-h-48 bg-gradient-to-br from-[#f26822]/10 to-[#2c2b2b] rounded-xl overflow-hidden border border-white/10">
             {book.image_url ? (
               <img
                 src={book.image_url}
@@ -30,7 +30,7 @@ const BookDetailModal: React.FC<BookDetailModalProps> = ({ book, onClose }) => {
               />
             ) : (
               <div className="w-full h-full flex flex-col items-center justify-center gap-3">
-                <BookOpen size={48} className="text-[#c4501a]/40" />
+                <BookOpen size={48} className="text-[#f26822]/40" />
                 <span className="text-white/20 text-xs uppercase tracking-widest text-center px-2">
                   Hernan Figueredo
                 </span>
@@ -43,7 +43,7 @@ const BookDetailModal: React.FC<BookDetailModalProps> = ({ book, onClose }) => {
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 mb-2">
             {[...Array(5)].map((_, i) => (
-              <Star key={i} size={13} className="text-[#c4501a] fill-[#c4501a]" />
+              <Star key={i} size={13} className="text-[#f26822] fill-[#f26822]" />
             ))}
             <span className="text-white/40 text-xs ml-1">Hernan Figueredo</span>
           </div>
@@ -61,7 +61,7 @@ const BookDetailModal: React.FC<BookDetailModalProps> = ({ book, onClose }) => {
               <ul className="space-y-2">
                 {book.features.map((feature, i) => (
                   <li key={i} className="flex items-start gap-2 text-sm text-white/70">
-                    <span className="w-1.5 h-1.5 rounded-full bg-[#c4501a] flex-shrink-0 mt-1.5" />
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#f26822] flex-shrink-0 mt-1.5" />
                     {feature}
                   </li>
                 ))}
@@ -71,7 +71,7 @@ const BookDetailModal: React.FC<BookDetailModalProps> = ({ book, onClose }) => {
 
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-3xl font-bold text-[#c4501a]">
+              <p className="text-3xl font-bold text-[#f26822]">
                 ${book.price.toLocaleString('es-CO')}
               </p>
               <p className="text-xs text-white/30">COP</p>

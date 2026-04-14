@@ -10,7 +10,7 @@ interface BadgeProps {
 }
 
 const variantClasses: Record<BadgeVariant, string> = {
-  accent: 'bg-[#c4501a]/20 text-[#c4501a]',
+  accent: 'bg-[#f26822]/20 text-[#f26822]',
   success: 'bg-green-500/20 text-green-400',
   warning: 'bg-yellow-500/20 text-yellow-400',
   danger: 'bg-red-500/20 text-red-400',

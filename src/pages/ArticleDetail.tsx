@@ -8,12 +8,12 @@ import type { Article } from '../types'
 import Spinner from '../components/ui/Spinner'
 
 const CAT_COLOR: Record<string, string> = {
-  Mentalidad:    '#c4501a',
+  Mentalidad:    '#f26822',
   Negocios:      '#e8a857',
   Espiritualidad:'#9b8ea8',
   General:       '#6b7280',
 }
-function catColor(cat: string) { return CAT_COLOR[cat] ?? '#c4501a' }
+function catColor(cat: string) { return CAT_COLOR[cat] ?? '#f26822' }
 
 // ── Static content map (keyed by slug) ───────────────────────
 const STATIC_CONTENT: Record<string, Omit<Article, 'id' | 'created_at' | 'updated_at'>> = {
@@ -147,7 +147,7 @@ const ArticleDetail: React.FC = () => {
     <div className="min-h-screen bg-[#2c2b2b] flex flex-col items-center justify-center gap-4 px-4">
       <BookOpen size={40} className="text-white/10" strokeWidth={1} />
       <p className="text-white/40 text-lg">Artículo no encontrado.</p>
-      <Link to="/articulos" className="text-[#c4501a] text-sm hover:underline">
+      <Link to="/articulos" className="text-[#f26822] text-sm hover:underline">
         Ver todos los artículos
       </Link>
     </div>
@@ -236,8 +236,8 @@ const ArticleDetail: React.FC = () => {
           className="max-w-2xl mx-auto px-4 mb-14"
         >
           <div className="bg-[#1a1b1c] border border-white/[0.07] rounded-2xl p-6 flex flex-col sm:flex-row items-start sm:items-center gap-4">
-            <div className="w-11 h-11 bg-[#c4501a]/10 border border-[#c4501a]/20 rounded-xl flex items-center justify-center flex-shrink-0">
-              <Download size={18} className="text-[#c4501a]" />
+            <div className="w-11 h-11 bg-[#f26822]/10 border border-[#f26822]/20 rounded-xl flex items-center justify-center flex-shrink-0">
+              <Download size={18} className="text-[#f26822]" />
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-white font-semibold text-sm">Descarga este artículo en PDF</p>
@@ -248,7 +248,7 @@ const ArticleDetail: React.FC = () => {
               target="_blank"
               rel="noopener noreferrer"
               download
-              className="flex items-center gap-2 bg-[#c4501a] hover:bg-[#d45c1a] text-white text-sm font-semibold px-5 py-2.5 rounded-xl transition-colors shadow-lg shadow-[#c4501a]/20 whitespace-nowrap"
+              className="flex items-center gap-2 bg-[#f26822] hover:bg-[#d45c1a] text-white text-sm font-semibold px-5 py-2.5 rounded-xl transition-colors shadow-lg shadow-[#f26822]/20 whitespace-nowrap"
             >
               <Download size={14} />
               Descargar PDF
@@ -259,10 +259,10 @@ const ArticleDetail: React.FC = () => {
 
       {/* ── Books CTA ────────────────────────────────────── */}
       <div className="max-w-2xl mx-auto px-4 mb-10">
-        <div className="bg-[#1a1b1c] border border-[#c4501a]/20 rounded-2xl p-6">
+        <div className="bg-[#1a1b1c] border border-[#f26822]/20 rounded-2xl p-6">
           <div className="flex items-start gap-4 mb-5">
-            <div className="w-10 h-10 bg-[#c4501a]/10 border border-[#c4501a]/25 rounded-xl flex items-center justify-center flex-shrink-0">
-              <BookOpen size={18} className="text-[#c4501a]" />
+            <div className="w-10 h-10 bg-[#f26822]/10 border border-[#f26822]/25 rounded-xl flex items-center justify-center flex-shrink-0">
+              <BookOpen size={18} className="text-[#f26822]" />
             </div>
             <div>
               <p className="text-white font-semibold text-sm">¿Este artículo te resonó?</p>
@@ -276,29 +276,29 @@ const ArticleDetail: React.FC = () => {
             <div className="space-y-3 mb-4">
               {featuredBooks.map((book: import('../types').Book) => (
                 <Link key={book.id} to="/libros"
-                  className="group flex items-center gap-3 bg-[#2c2b2b] hover:bg-white/[0.04] border border-white/[0.06] hover:border-[#c4501a]/25 rounded-xl p-3 transition-all duration-200">
-                  <div className="w-10 h-14 rounded-lg overflow-hidden flex-shrink-0 bg-[#c4501a]/10 border border-[#c4501a]/20 flex items-center justify-center">
+                  className="group flex items-center gap-3 bg-[#2c2b2b] hover:bg-white/[0.04] border border-white/[0.06] hover:border-[#f26822]/25 rounded-xl p-3 transition-all duration-200">
+                  <div className="w-10 h-14 rounded-lg overflow-hidden flex-shrink-0 bg-[#f26822]/10 border border-[#f26822]/20 flex items-center justify-center">
                     {book.image_url
                       ? <img src={book.image_url} alt={book.title} className="w-full h-full object-cover" />
-                      : <BookOpen size={14} className="text-[#c4501a]/60" />
+                      : <BookOpen size={14} className="text-[#f26822]/60" />
                     }
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="text-white/80 text-xs font-semibold line-clamp-2 leading-snug group-hover:text-white transition-colors">
                       {book.title}
                     </p>
-                    <p className="text-[#c4501a] text-[11px] font-bold mt-1">
+                    <p className="text-[#f26822] text-[11px] font-bold mt-1">
                       ${book.price.toLocaleString('es-CO')} COP
                     </p>
                   </div>
-                  <ArrowRight size={13} className="text-white/20 group-hover:text-[#c4501a] flex-shrink-0 transition-colors" />
+                  <ArrowRight size={13} className="text-white/20 group-hover:text-[#f26822] flex-shrink-0 transition-colors" />
                 </Link>
               ))}
             </div>
           ) : null}
 
           <Link to="/libros"
-            className="flex items-center justify-center gap-2 w-full bg-[#c4501a] hover:bg-[#d45c1a] text-white text-sm font-semibold py-3 rounded-xl transition-colors shadow-lg shadow-[#c4501a]/15">
+            className="flex items-center justify-center gap-2 w-full bg-[#f26822] hover:bg-[#d45c1a] text-white text-sm font-semibold py-3 rounded-xl transition-colors shadow-lg shadow-[#f26822]/15">
             Ver todos los libros
             <ArrowRight size={14} />
           </Link>
@@ -334,7 +334,7 @@ const ArticleDetail: React.FC = () => {
                     <Clock size={10} /> {r.read_time} min
                   </p>
                 </div>
-                <ArrowLeft size={13} className="text-white/20 group-hover:text-[#c4501a] rotate-180 mt-1 flex-shrink-0 transition-colors" />
+                <ArrowLeft size={13} className="text-white/20 group-hover:text-[#f26822] rotate-180 mt-1 flex-shrink-0 transition-colors" />
               </Link>
             ))}
           </div>
@@ -344,7 +344,7 @@ const ArticleDetail: React.FC = () => {
       {/* ── Back to all ──────────────────────────────────── */}
       <div className="max-w-2xl mx-auto px-4 pb-24 pt-4">
         <Link to="/"
-          className="flex items-center gap-2 text-white/25 hover:text-[#c4501a] text-sm transition-colors group">
+          className="flex items-center gap-2 text-white/25 hover:text-[#f26822] text-sm transition-colors group">
           <ArrowLeft size={13} className="group-hover:-translate-x-0.5 transition-transform" />
           Todos los artículos
         </Link>

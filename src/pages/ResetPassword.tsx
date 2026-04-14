@@ -103,8 +103,8 @@ const ResetPassword: React.FC = () => {
             {/* ── Checking ── */}
             {state === 'checking' && (
               <div className="text-center space-y-4 py-6">
-                <div className="w-12 h-12 bg-[#c4501a]/10 border border-[#c4501a]/20 rounded-2xl flex items-center justify-center mx-auto">
-                  <Lock size={20} className="text-[#c4501a] animate-pulse" />
+                <div className="w-12 h-12 bg-[#f26822]/10 border border-[#f26822]/20 rounded-2xl flex items-center justify-center mx-auto">
+                  <Lock size={20} className="text-[#f26822] animate-pulse" />
                 </div>
                 <h2 className="text-white font-bold text-lg">Verificando enlace…</h2>
                 <p className="text-white/40 text-sm">Solo tomará un momento.</p>
@@ -125,7 +125,7 @@ const ResetPassword: React.FC = () => {
                 </div>
                 <button
                   onClick={() => navigate('/auth')}
-                  className="flex items-center justify-center gap-2 text-[#c4501a] hover:text-white text-sm font-medium transition-colors mx-auto mt-2"
+                  className="flex items-center justify-center gap-2 text-[#f26822] hover:text-white text-sm font-medium transition-colors mx-auto mt-2"
                 >
                   <Mail size={14} />
                   Solicitar nuevo enlace
@@ -144,7 +144,7 @@ const ResetPassword: React.FC = () => {
                   <p className="text-white/40 text-sm">Redirigiendo a tu cuenta…</p>
                 </div>
                 <div className="flex justify-center">
-                  <div className="w-1.5 h-1.5 rounded-full bg-[#c4501a] animate-ping" />
+                  <div className="w-1.5 h-1.5 rounded-full bg-[#f26822] animate-ping" />
                 </div>
               </div>
             )}
@@ -153,8 +153,8 @@ const ResetPassword: React.FC = () => {
             {state === 'ready' && (
               <form onSubmit={handleSubmit} className="space-y-5">
                 <div className="text-center mb-2">
-                  <div className="w-12 h-12 bg-[#c4501a]/10 border border-[#c4501a]/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                    <Lock size={20} className="text-[#c4501a]" />
+                  <div className="w-12 h-12 bg-[#f26822]/10 border border-[#f26822]/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                    <Lock size={20} className="text-[#f26822]" />
                   </div>
                   <h2 className="text-white font-bold text-lg mb-1">Nueva contraseña</h2>
                   <p className="text-white/40 text-sm">Elige una contraseña segura.</p>
