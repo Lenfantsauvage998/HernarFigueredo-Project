@@ -40,7 +40,7 @@ const WhatsAppButton: React.FC = () => {
             className="w-72 bg-[#1a1b1c] border border-white/[0.09] rounded-2xl shadow-2xl shadow-black/50 overflow-hidden"
           >
             {/* Header */}
-            <div className="bg-[#f26822] px-4 py-3 flex items-center gap-3">
+            <div className="bg-[#c4501a] px-4 py-3 flex items-center gap-3">
               <div className="w-9 h-9 bg-white/20 rounded-full flex items-center justify-center flex-shrink-0">
                 <MessageCircle size={18} className="text-white" />
               </div>
@@ -138,7 +138,7 @@ const WhatsAppButton: React.FC = () => {
         {!open && (
           <motion.div
             initial={{ scale: 0 }} animate={{ scale: 1 }}
-            className="absolute -top-0.5 -right-0.5 w-4 h-4 bg-[#f26822] border-2 border-[#2c2b2b] rounded-full flex items-center justify-center"
+            className="absolute -top-0.5 -right-0.5 w-4 h-4 bg-[#c4501a] border-2 border-[#2c2b2b] rounded-full flex items-center justify-center"
           >
             <span className="text-white text-[8px] font-bold leading-none">1</span>
           </motion.div>

@@ -30,7 +30,7 @@ export const TestimonialsColumn = (props: {
             {props.testimonials.map(({ text, image, name, role }, i) => (
               <div
                 key={i}
-                className="p-7 rounded-2xl border border-white/10 bg-[#1a1b1c] shadow-lg shadow-[#f26822]/5 max-w-xs w-full"
+                className="p-7 rounded-2xl border border-white/10 bg-[#1a1b1c] shadow-lg shadow-[#c4501a]/5 max-w-xs w-full"
               >
                 <p className="text-white/70 text-sm leading-relaxed">&ldquo;{text}&rdquo;</p>
                 <div className="flex items-center gap-3 mt-5">

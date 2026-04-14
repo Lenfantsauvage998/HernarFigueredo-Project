@@ -26,7 +26,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
             placeholder:text-white/30
             ${error
               ? 'border-red-500 focus:border-red-400 focus:ring-2 focus:ring-red-500/20'
-              : 'border-white/10 focus:border-[#f26822] focus:ring-2 focus:ring-[#f26822]/20'
+              : 'border-white/10 focus:border-[#c4501a] focus:ring-2 focus:ring-[#c4501a]/20'
             }
             disabled:opacity-50 disabled:cursor-not-allowed
             ${className}
@@ -68,7 +68,7 @@ export const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
             placeholder:text-white/30
             ${error
               ? 'border-red-500 focus:border-red-400'
-              : 'border-white/10 focus:border-[#f26822]'
+              : 'border-white/10 focus:border-[#c4501a]'
             }
             ${className}
           `}

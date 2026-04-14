@@ -213,7 +213,7 @@ const Checkout: React.FC = () => {
                     <select
                       value={form.idType}
                       onChange={(e) => setForm({ ...form, idType: e.target.value })}
-                      className="px-4 py-2.5 rounded-xl border border-white/10 bg-[#1a1b1c] text-white text-sm focus:border-[#f26822]/50 outline-none"
+                      className="px-4 py-2.5 rounded-xl border border-white/10 bg-[#1a1b1c] text-white text-sm focus:border-[#c4501a]/50 outline-none"
                     >
                       <option value="CC">Cédula de Ciudadanía (CC)</option>
                       <option value="NIT">NIT</option>
@@ -248,15 +248,15 @@ const Checkout: React.FC = () => {
             <div className="lg:col-span-2">
               <div className="bg-[#1a1b1c] rounded-2xl p-6 border border-white/10 sticky top-24">
                 <div className="flex items-center gap-2 mb-5">
-                  <BookOpen size={18} className="text-[#f26822]" />
+                  <BookOpen size={18} className="text-[#c4501a]" />
                   <h2 className="font-semibold text-white">Resumen del pedido</h2>
                 </div>
 
                 <div className="space-y-4 mb-6">
                   {items.map((item) => (
                     <div key={item.service.id} className="flex items-start gap-3">
-                      <div className="w-10 h-10 bg-[#f26822]/10 rounded-lg flex items-center justify-center flex-shrink-0">
-                        <BookOpen size={16} className="text-[#f26822]" />
+                      <div className="w-10 h-10 bg-[#c4501a]/10 rounded-lg flex items-center justify-center flex-shrink-0">
+                        <BookOpen size={16} className="text-[#c4501a]" />
                       </div>
                       <div className="flex-1 min-w-0">
                         <p className="text-sm font-medium text-white line-clamp-1">{item.service.title}</p>
@@ -276,7 +276,7 @@ const Checkout: React.FC = () => {
                   </div>
                   <div className="flex justify-between font-bold">
                     <span className="text-white">Total</span>
-                    <span className="text-[#f26822] text-lg">${total.toLocaleString('es-CO')} COP</span>
+                    <span className="text-[#c4501a] text-lg">${total.toLocaleString('es-CO')} COP</span>
                   </div>
                 </div>
 

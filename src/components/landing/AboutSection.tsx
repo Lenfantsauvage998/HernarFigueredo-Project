@@ -15,8 +15,8 @@ const AboutSection: React.FC = () => {
           viewport={{ once: true }}
           className="flex items-center gap-4 mb-16"
         >
-          <div className="h-px w-8 bg-[#f26822]" />
-          <p className="text-[#f26822] text-xs font-bold uppercase tracking-[0.3em]">
+          <div className="h-px w-8 bg-[#c4501a]" />
+          <p className="text-[#c4501a] text-xs font-bold uppercase tracking-[0.3em]">
             Sobre el autor
           </p>
         </motion.div>
@@ -39,7 +39,7 @@ const AboutSection: React.FC = () => {
               />
             </div>
             {/* Decorative accents */}
-            <div className="absolute -bottom-5 -right-5 w-28 h-28 border-2 border-[#f26822]/18 rounded-2xl -z-10" />
+            <div className="absolute -bottom-5 -right-5 w-28 h-28 border-2 border-[#c4501a]/18 rounded-2xl -z-10" />
             <div className="absolute -top-4 -left-4 w-16 h-16 border border-white/[0.05] rounded-xl -z-10" />
             {/* Floating label */}
             <div className="absolute bottom-5 left-5 right-5 bg-black/60 backdrop-blur-sm border border-white/10 rounded-xl px-4 py-3">
@@ -58,7 +58,7 @@ const AboutSection: React.FC = () => {
           >
             <h2 className="text-5xl font-bold text-white mb-6 leading-tight">
               Hernan<br />
-              <span className="text-[#f26822]">Figueredo</span>
+              <span className="text-[#c4501a]">Figueredo</span>
             </h2>
 
             {/* Pull quote */}
@@ -67,7 +67,7 @@ const AboutSection: React.FC = () => {
               whileInView={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.7, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
               viewport={{ once: true }}
-              className="relative mb-8 pl-5 border-l-2 border-[#f26822]/50"
+              className="relative mb-8 pl-5 border-l-2 border-[#c4501a]/50"
             >
               <p className="text-white/80 text-lg font-light italic leading-relaxed">
                 "No escribo para motivarte.
@@ -99,7 +99,7 @@ const AboutSection: React.FC = () => {
                 { value: '15+', label: 'Años' },
               ].map((s) => (
                 <div key={s.label} className="text-center bg-white/[0.03] border border-white/[0.06] rounded-xl py-3">
-                  <p className="text-xl font-bold text-[#f26822]">{s.value}</p>
+                  <p className="text-xl font-bold text-[#c4501a]">{s.value}</p>
                   <p className="text-white/30 text-[10px] uppercase tracking-wider mt-0.5">{s.label}</p>
                 </div>
               ))}
@@ -108,7 +108,7 @@ const AboutSection: React.FC = () => {
             <div className="flex items-center gap-4">
               <Link
                 to="/libros"
-                className="inline-flex items-center justify-center gap-2 bg-[#f26822] hover:bg-[#d45c1a] text-white font-semibold px-7 py-3.5 rounded-xl transition-colors text-sm shadow-lg shadow-[#f26822]/20"
+                className="inline-flex items-center justify-center gap-2 bg-[#c4501a] hover:bg-[#d45c1a] text-white font-semibold px-7 py-3.5 rounded-xl transition-colors text-sm shadow-lg shadow-[#c4501a]/20"
               >
                 Ver libros
               </Link>

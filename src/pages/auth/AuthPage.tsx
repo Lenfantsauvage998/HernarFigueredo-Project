@@ -45,12 +45,12 @@ const AuthPage: React.FC = () => {
                 key={tab}
                 onClick={() => setActiveTab(tab)}
                 className={`flex-1 py-4 text-sm font-semibold transition-colors relative ${
-                  activeTab === tab ? 'text-[#f26822]' : 'text-white/40 hover:text-white'
+                  activeTab === tab ? 'text-[#c4501a]' : 'text-white/40 hover:text-white'
                 }`}
               >
                 {tab === 'login' ? 'Ingresar' : 'Crear cuenta'}
                 {activeTab === tab && (
-                  <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#f26822]" />
+                  <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#c4501a]" />
                 )}
               </button>
             ))}
@@ -70,9 +70,9 @@ const AuthPage: React.FC = () => {
 
         <p className="text-center text-xs text-white/20 mt-6">
           Al ingresar, aceptas nuestros{' '}
-          <a href="#" className="text-[#f26822] hover:underline">Términos de uso</a>
+          <a href="#" className="text-[#c4501a] hover:underline">Términos de uso</a>
           {' '}y{' '}
-          <a href="#" className="text-[#f26822] hover:underline">Política de privacidad</a>
+          <a href="#" className="text-[#c4501a] hover:underline">Política de privacidad</a>
         </p>
       </div>
     </div>
@@ -129,7 +129,7 @@ const ForgotPasswordView: React.FC<ForgotPasswordViewProps> = ({ onBack }) => {
                   </p>
                 </div>
                 <button onClick={onBack}
-                  className="flex items-center justify-center gap-2 text-[#f26822] hover:text-white text-sm font-medium transition-colors mx-auto">
+                  className="flex items-center justify-center gap-2 text-[#c4501a] hover:text-white text-sm font-medium transition-colors mx-auto">
                   <ArrowLeft size={14} />
                   Volver al inicio de sesión
                 </button>
@@ -137,8 +137,8 @@ const ForgotPasswordView: React.FC<ForgotPasswordViewProps> = ({ onBack }) => {
             ) : (
               <form onSubmit={handleSubmit} className="space-y-5">
                 <div className="text-center mb-2">
-                  <div className="w-12 h-12 bg-[#f26822]/10 border border-[#f26822]/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                    <Mail size={20} className="text-[#f26822]" />
+                  <div className="w-12 h-12 bg-[#c4501a]/10 border border-[#c4501a]/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                    <Mail size={20} className="text-[#c4501a]" />
                   </div>
                   <h2 className="text-white font-bold text-lg mb-1">¿Olvidaste tu contraseña?</h2>
                   <p className="text-white/40 text-sm">
@@ -245,7 +245,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSuccess, onForgotPassword }) =>
         </div>
         <div className="flex justify-end mt-1.5">
           <button type="button" onClick={onForgotPassword}
-            className="text-xs text-white/35 hover:text-[#f26822] transition-colors">
+            className="text-xs text-white/35 hover:text-[#c4501a] transition-colors">
             ¿Olvidaste tu contraseña?
           </button>
         </div>

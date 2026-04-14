@@ -26,7 +26,7 @@ const Footer: React.FC = () => {
   return (
     <footer className="bg-[#0f0e0e] text-white">
       {/* Orange top accent */}
-      <div className="h-px bg-gradient-to-r from-transparent via-[#f26822]/35 to-transparent" />
+      <div className="h-px bg-gradient-to-r from-transparent via-[#c4501a]/35 to-transparent" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-8">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-10 mb-14">
@@ -36,7 +36,7 @@ const Footer: React.FC = () => {
             <p className="font-bold tracking-widest uppercase text-sm mb-1 text-white">
               Hernan Figueredo
             </p>
-            <div className="h-px w-12 bg-[#f26822]/50 mb-4" />
+            <div className="h-px w-12 bg-[#c4501a]/50 mb-4" />
             <p className="text-white/38 text-sm leading-relaxed max-w-xs mb-7">
               Escritor, pensador y guía de crecimiento personal.
               Ayudando a personas a construir una vida con propósito.
@@ -53,7 +53,7 @@ const Footer: React.FC = () => {
                   key={label}
                   href={href}
                   aria-label={label}
-                  className="w-9 h-9 bg-white/[0.05] hover:bg-[#f26822]/18 border border-white/[0.09] hover:border-[#f26822]/30 rounded-lg flex items-center justify-center text-white/40 hover:text-[#f26822] transition-all duration-200"
+                  className="w-9 h-9 bg-white/[0.05] hover:bg-[#c4501a]/18 border border-white/[0.09] hover:border-[#c4501a]/30 rounded-lg flex items-center justify-center text-white/40 hover:text-[#c4501a] transition-all duration-200"
                 >
                   <Icon />
                 </a>

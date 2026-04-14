@@ -12,7 +12,7 @@ const sizes = {
 }
 
 const colors = {
-  accent: 'border-[#f26822] border-t-transparent',
+  accent: 'border-[#c4501a] border-t-transparent',
   white: 'border-white border-t-transparent',
   gray: 'border-white/40 border-t-transparent',
 }

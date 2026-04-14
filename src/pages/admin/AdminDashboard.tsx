@@ -398,8 +398,8 @@ const AdminDashboard: React.FC = () => {
         {/* Header */}
         <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} className="mb-10">
           <div className="flex items-center gap-3 mb-2">
-            <div className="h-px w-8 bg-[#f26822]" />
-            <p className="text-[#f26822] text-xs font-bold uppercase tracking-[0.3em]">Panel</p>
+            <div className="h-px w-8 bg-[#c4501a]" />
+            <p className="text-[#c4501a] text-xs font-bold uppercase tracking-[0.3em]">Panel</p>
           </div>
           <h1 className="text-4xl font-bold text-white">Admin</h1>
         </motion.div>
@@ -415,8 +415,8 @@ const AdminDashboard: React.FC = () => {
             <motion.div key={label} initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.07 }}
               className="bg-[#1a1b1c] border border-white/[0.07] rounded-2xl p-5 flex items-center gap-4">
-              <div className="w-10 h-10 bg-[#f26822]/10 border border-[#f26822]/20 rounded-xl flex items-center justify-center">
-                <Icon size={18} className="text-[#f26822]" />
+              <div className="w-10 h-10 bg-[#c4501a]/10 border border-[#c4501a]/20 rounded-xl flex items-center justify-center">
+                <Icon size={18} className="text-[#c4501a]" />
               </div>
               <div>
                 <p className="text-xl font-bold text-white">{loading ? '—' : value}</p>
@@ -432,7 +432,7 @@ const AdminDashboard: React.FC = () => {
             <button key={key} onClick={() => setTab(key)}
               className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
                 tab === key
-                  ? 'bg-[#f26822] text-white shadow-lg shadow-[#f26822]/20'
+                  ? 'bg-[#c4501a] text-white shadow-lg shadow-[#c4501a]/20'
                   : 'text-white/40 hover:text-white'
               }`}>
               <Icon size={14} />
@@ -450,7 +450,7 @@ const AdminDashboard: React.FC = () => {
               <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
                 <div className="flex justify-end mb-5">
                   <button onClick={openCreate}
-                    className="flex items-center gap-2 bg-[#f26822] hover:bg-[#d45c1a] text-white text-sm font-semibold px-5 py-2.5 rounded-xl transition-colors shadow-lg shadow-[#f26822]/20">
+                    className="flex items-center gap-2 bg-[#c4501a] hover:bg-[#d45c1a] text-white text-sm font-semibold px-5 py-2.5 rounded-xl transition-colors shadow-lg shadow-[#c4501a]/20">
                     <Plus size={15} /> Nuevo libro
                   </button>
                 </div>
@@ -458,16 +458,16 @@ const AdminDashboard: React.FC = () => {
                   {books.map(book => (
                     <div key={book.id}
                       className="bg-[#1a1b1c] border border-white/[0.07] rounded-2xl p-5 flex items-center gap-5">
-                      <div className="w-12 h-16 bg-[#f26822]/10 border border-[#f26822]/20 rounded-lg flex items-center justify-center flex-shrink-0 overflow-hidden">
+                      <div className="w-12 h-16 bg-[#c4501a]/10 border border-[#c4501a]/20 rounded-lg flex items-center justify-center flex-shrink-0 overflow-hidden">
                         {book.image_url
                           ? <img src={book.image_url} alt={book.title} className="w-full h-full object-cover" />
-                          : <BookOpen size={18} className="text-[#f26822]/60" />
+                          : <BookOpen size={18} className="text-[#c4501a]/60" />
                         }
                       </div>
                       <div className="flex-1 min-w-0">
                         <p className="text-white font-semibold text-sm truncate">{book.title}</p>
                         <p className="text-white/40 text-xs mt-0.5 line-clamp-1">{book.description}</p>
-                        <p className="text-[#f26822] text-xs font-bold mt-1">${book.price.toLocaleString('es-CO')} COP</p>
+                        <p className="text-[#c4501a] text-xs font-bold mt-1">${book.price.toLocaleString('es-CO')} COP</p>
                       </div>
                       <div className="flex items-center gap-2">
                         <button onClick={() => openEdit(book)}
@@ -509,7 +509,7 @@ const AdminDashboard: React.FC = () => {
                         <p className="text-white/35 text-xs">{order.user_email}</p>
                       </div>
                       <div className="text-right">
-                        <p className="text-[#f26822] font-bold text-sm">${order.total_amount.toLocaleString('es-CO')}</p>
+                        <p className="text-[#c4501a] font-bold text-sm">${order.total_amount.toLocaleString('es-CO')}</p>
                         <p className="text-white/25 text-[10px]">{new Date(order.created_at).toLocaleDateString('es-CO')}</p>
                       </div>
                       <span className={`text-xs font-semibold px-3 py-1 rounded-lg border ${STATUS_COLORS[order.status]}`}>
@@ -574,8 +574,8 @@ const AdminDashboard: React.FC = () => {
                     <div key={u.id}
                       className="bg-[#1a1b1c] border border-white/[0.07] rounded-2xl p-4 flex items-center gap-4">
                       {/* Avatar */}
-                      <div className="w-10 h-10 rounded-xl bg-[#f26822]/10 border border-[#f26822]/20 flex items-center justify-center flex-shrink-0">
-                        <span className="text-[#f26822] text-sm font-bold">
+                      <div className="w-10 h-10 rounded-xl bg-[#c4501a]/10 border border-[#c4501a]/20 flex items-center justify-center flex-shrink-0">
+                        <span className="text-[#c4501a] text-sm font-bold">
                           {(u.name || u.email).charAt(0).toUpperCase()}
                         </span>
                       </div>
@@ -587,7 +587,7 @@ const AdminDashboard: React.FC = () => {
                             {u.name || <span className="text-white/30 italic">Sin nombre</span>}
                           </p>
                           {u.role === 'admin' && (
-                            <span className="text-[10px] font-bold px-2 py-0.5 bg-[#f26822]/15 border border-[#f26822]/30 text-[#f26822] rounded-md uppercase tracking-wide">
+                            <span className="text-[10px] font-bold px-2 py-0.5 bg-[#c4501a]/15 border border-[#c4501a]/30 text-[#c4501a] rounded-md uppercase tracking-wide">
                               Admin
                             </span>
                           )}
@@ -606,8 +606,8 @@ const AdminDashboard: React.FC = () => {
                           title={u.role === 'admin' ? 'Quitar admin' : 'Hacer admin'}
                           className={`w-8 h-8 rounded-lg border flex items-center justify-center transition-all ${
                             u.role === 'admin'
-                              ? 'bg-[#f26822]/10 border-[#f26822]/25 text-[#f26822] hover:bg-[#f26822]/20'
-                              : 'bg-white/[0.04] border-white/[0.08] text-white/35 hover:text-[#f26822] hover:border-[#f26822]/25'
+                              ? 'bg-[#c4501a]/10 border-[#c4501a]/25 text-[#c4501a] hover:bg-[#c4501a]/20'
+                              : 'bg-white/[0.04] border-white/[0.08] text-white/35 hover:text-[#c4501a] hover:border-[#c4501a]/25'
                           }`}>
                           {togglingRole === u.id
                             ? <Spinner size="sm" />
@@ -644,7 +644,7 @@ const AdminDashboard: React.FC = () => {
                   <div className="lg:col-span-2 space-y-4">
                     <div className="bg-[#1a1b1c] border border-white/[0.07] rounded-2xl p-6">
                       <h3 className="text-white font-semibold mb-5 flex items-center gap-2">
-                        <Mail size={16} className="text-[#f26822]" />
+                        <Mail size={16} className="text-[#c4501a]" />
                         Redactar email
                       </h3>
 
@@ -662,7 +662,7 @@ const AdminDashboard: React.FC = () => {
                               onClick={() => setNlTarget(opt.value as typeof nlTarget)}
                               className={`flex-1 py-2.5 px-4 rounded-xl text-sm font-medium border transition-all ${
                                 nlTarget === opt.value
-                                  ? 'bg-[#f26822] border-[#f26822] text-white shadow-lg shadow-[#f26822]/20'
+                                  ? 'bg-[#c4501a] border-[#c4501a] text-white shadow-lg shadow-[#c4501a]/20'
                                   : 'border-white/[0.08] text-white/40 hover:text-white hover:border-white/20'
                               }`}>
                               {opt.label}
@@ -680,7 +680,7 @@ const AdminDashboard: React.FC = () => {
                           value={nlSubject}
                           onChange={e => setNlSubject(e.target.value)}
                           placeholder="Ej: 3 hábitos que cambiarán tu mañana"
-                          className="w-full px-4 py-2.5 bg-[#2c2b2b] border border-white/[0.09] rounded-xl text-white text-sm outline-none focus:border-[#f26822]/45 placeholder:text-white/20"
+                          className="w-full px-4 py-2.5 bg-[#2c2b2b] border border-white/[0.09] rounded-xl text-white text-sm outline-none focus:border-[#c4501a]/45 placeholder:text-white/20"
                         />
                       </div>
 
@@ -720,14 +720,14 @@ const AdminDashboard: React.FC = () => {
                         <button
                           onClick={sendTest}
                           disabled={sending || !nlSubject.trim() || nlBody.replace(/<[^>]*>/g, '').trim() === ''}
-                          className="flex-1 flex items-center justify-center gap-2 border border-white/20 hover:border-[#f26822]/50 text-white/60 hover:text-white font-medium py-3 rounded-xl transition-all duration-200 disabled:opacity-40 disabled:pointer-events-none text-sm">
+                          className="flex-1 flex items-center justify-center gap-2 border border-white/20 hover:border-[#c4501a]/50 text-white/60 hover:text-white font-medium py-3 rounded-xl transition-all duration-200 disabled:opacity-40 disabled:pointer-events-none text-sm">
                           {sending ? <Spinner size="sm" /> : <Send size={14} />}
                           Probar (mi email)
                         </button>
                         <button
                           onClick={sendNewsletter}
                           disabled={sending || !nlSubject.trim() || !nlBody.trim() || nlBody.replace(/<[^>]*>/g, '').trim() === ''}
-                          className="flex-1 flex items-center justify-center gap-2 bg-[#f26822] hover:bg-[#d45c1a] text-white font-semibold py-3 rounded-xl transition-all duration-200 shadow-lg shadow-[#f26822]/20 disabled:opacity-50 disabled:pointer-events-none text-sm">
+                          className="flex-1 flex items-center justify-center gap-2 bg-[#c4501a] hover:bg-[#d45c1a] text-white font-semibold py-3 rounded-xl transition-all duration-200 shadow-lg shadow-[#c4501a]/20 disabled:opacity-50 disabled:pointer-events-none text-sm">
                           {sending ? <><Spinner size="sm" /> Enviando...</> : <><Send size={15} /> Enviar a todos</>}
                         </button>
                       </div>
@@ -739,7 +739,7 @@ const AdminDashboard: React.FC = () => {
                     <div className="bg-[#1a1b1c] border border-white/[0.07] rounded-2xl p-5">
                       <div className="flex items-center justify-between mb-4">
                         <h3 className="text-white font-semibold text-sm flex items-center gap-2">
-                          <Users size={14} className="text-[#f26822]" />
+                          <Users size={14} className="text-[#c4501a]" />
                           Suscriptores ({subscribers.length})
                         </h3>
                         <button onClick={fetchSubscribers}
@@ -767,8 +767,8 @@ const AdminDashboard: React.FC = () => {
                     </div>
 
                     {/* Tips */}
-                    <div className="bg-[#f26822]/5 border border-[#f26822]/15 rounded-2xl p-4">
-                      <p className="text-[#f26822] text-xs font-bold uppercase tracking-widest mb-3">Consejos</p>
+                    <div className="bg-[#c4501a]/5 border border-[#c4501a]/15 rounded-2xl p-4">
+                      <p className="text-[#c4501a] text-xs font-bold uppercase tracking-widest mb-3">Consejos</p>
                       <ul className="space-y-2 text-white/40 text-xs">
                         <li>• Asunto corto = más aperturas</li>
                         <li>• Escribe en primera persona</li>
@@ -786,7 +786,7 @@ const AdminDashboard: React.FC = () => {
               <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
                 <div className="flex justify-end mb-5">
                   <button onClick={openCreateArticle}
-                    className="flex items-center gap-2 bg-[#f26822] hover:bg-[#d45c1a] text-white text-sm font-semibold px-5 py-2.5 rounded-xl transition-colors shadow-lg shadow-[#f26822]/20">
+                    className="flex items-center gap-2 bg-[#c4501a] hover:bg-[#d45c1a] text-white text-sm font-semibold px-5 py-2.5 rounded-xl transition-colors shadow-lg shadow-[#c4501a]/20">
                     <Plus size={15} /> Nuevo artículo
                   </button>
                 </div>
@@ -795,8 +795,8 @@ const AdminDashboard: React.FC = () => {
                   {articles.map(a => (
                     <div key={a.id}
                       className="bg-[#1a1b1c] border border-white/[0.07] rounded-2xl p-5 flex items-center gap-5">
-                      <div className="w-10 h-10 bg-[#f26822]/10 border border-[#f26822]/20 rounded-xl flex items-center justify-center flex-shrink-0">
-                        <FileText size={16} className="text-[#f26822]" />
+                      <div className="w-10 h-10 bg-[#c4501a]/10 border border-[#c4501a]/20 rounded-xl flex items-center justify-center flex-shrink-0">
+                        <FileText size={16} className="text-[#c4501a]" />
                       </div>
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2">
@@ -868,7 +868,7 @@ const AdminDashboard: React.FC = () => {
                       ...f, title: e.target.value,
                       slug: f.slug || slugify(e.target.value)
                     }))}
-                    className="w-full px-4 py-2.5 bg-[#2c2b2b] border border-white/[0.09] rounded-xl text-white text-sm outline-none focus:border-[#f26822]/45"
+                    className="w-full px-4 py-2.5 bg-[#2c2b2b] border border-white/[0.09] rounded-xl text-white text-sm outline-none focus:border-[#c4501a]/45"
                     placeholder="El título del artículo" />
                 </div>
 
@@ -877,7 +877,7 @@ const AdminDashboard: React.FC = () => {
                   <label className="text-[10px] uppercase tracking-widest text-white/35 block mb-1.5">Slug (URL)</label>
                   <input value={articleForm.slug}
                     onChange={e => setArticleForm(f => ({ ...f, slug: e.target.value }))}
-                    className="w-full px-4 py-2.5 bg-[#2c2b2b] border border-white/[0.09] rounded-xl text-white/60 text-sm outline-none focus:border-[#f26822]/45 font-mono"
+                    className="w-full px-4 py-2.5 bg-[#2c2b2b] border border-white/[0.09] rounded-xl text-white/60 text-sm outline-none focus:border-[#c4501a]/45 font-mono"
                     placeholder="auto-generado-del-titulo" />
                 </div>
 
@@ -887,7 +887,7 @@ const AdminDashboard: React.FC = () => {
                     <label className="text-[10px] uppercase tracking-widest text-white/35 block mb-1.5">Categoría</label>
                     <select value={articleForm.category}
                       onChange={e => setArticleForm(f => ({ ...f, category: e.target.value }))}
-                      className="w-full px-4 py-2.5 bg-[#2c2b2b] border border-white/[0.09] rounded-xl text-white text-sm outline-none focus:border-[#f26822]/45">
+                      className="w-full px-4 py-2.5 bg-[#2c2b2b] border border-white/[0.09] rounded-xl text-white text-sm outline-none focus:border-[#c4501a]/45">
                       {['Mentalidad','Negocios','Espiritualidad','General'].map(c => (
                         <option key={c} value={c}>{c}</option>
                       ))}
@@ -897,7 +897,7 @@ const AdminDashboard: React.FC = () => {
                     <label className="text-[10px] uppercase tracking-widest text-white/35 block mb-1.5">Tiempo de lectura (min)</label>
                     <input type="number" min="1" max="60" value={articleForm.read_time}
                       onChange={e => setArticleForm(f => ({ ...f, read_time: e.target.value }))}
-                      className="w-full px-4 py-2.5 bg-[#2c2b2b] border border-white/[0.09] rounded-xl text-white text-sm outline-none focus:border-[#f26822]/45" />
+                      className="w-full px-4 py-2.5 bg-[#2c2b2b] border border-white/[0.09] rounded-xl text-white text-sm outline-none focus:border-[#c4501a]/45" />
                   </div>
                 </div>
 
@@ -907,7 +907,7 @@ const AdminDashboard: React.FC = () => {
                   <textarea required value={articleForm.excerpt}
                     onChange={e => setArticleForm(f => ({ ...f, excerpt: e.target.value }))}
                     rows={2}
-                    className="w-full px-4 py-2.5 bg-[#2c2b2b] border border-white/[0.09] rounded-xl text-white text-sm outline-none focus:border-[#f26822]/45 resize-none"
+                    className="w-full px-4 py-2.5 bg-[#2c2b2b] border border-white/[0.09] rounded-xl text-white text-sm outline-none focus:border-[#c4501a]/45 resize-none"
                     placeholder="Frase corta que aparece en la lista..." />
                 </div>
 
@@ -936,7 +936,7 @@ const AdminDashboard: React.FC = () => {
                       </button>
                     </div>
                   )}
-                  <label className={`flex items-center gap-3 px-4 py-3 bg-[#2c2b2b] border border-dashed border-white/[0.15] hover:border-[#f26822]/40 rounded-xl cursor-pointer transition-colors ${uploadingCover ? 'opacity-60 pointer-events-none' : ''}`}>
+                  <label className={`flex items-center gap-3 px-4 py-3 bg-[#2c2b2b] border border-dashed border-white/[0.15] hover:border-[#c4501a]/40 rounded-xl cursor-pointer transition-colors ${uploadingCover ? 'opacity-60 pointer-events-none' : ''}`}>
                     {uploadingCover
                       ? <><Spinner size="sm" /><span className="text-white/40 text-sm">Subiendo...</span></>
                       : <><Upload size={15} className="text-white/40" /><span className="text-white/40 text-sm">Subir imagen de portada</span></>
@@ -948,7 +948,7 @@ const AdminDashboard: React.FC = () => {
                     <ImageIcon size={12} className="text-white/20 flex-shrink-0" />
                     <input value={articleForm.cover_url}
                       onChange={e => { setArticleForm(f => ({ ...f, cover_url: e.target.value })); setCoverPreview(e.target.value || null) }}
-                      className="flex-1 px-3 py-1.5 bg-transparent border-b border-white/[0.07] text-white/40 text-xs outline-none focus:border-[#f26822]/30 placeholder:text-white/20"
+                      className="flex-1 px-3 py-1.5 bg-transparent border-b border-white/[0.07] text-white/40 text-xs outline-none focus:border-[#c4501a]/30 placeholder:text-white/20"
                       placeholder="O pega una URL de imagen..." />
                   </div>
                 </div>
@@ -958,7 +958,7 @@ const AdminDashboard: React.FC = () => {
                   <label className="text-[10px] uppercase tracking-widest text-white/35 block mb-1.5">URL de PDF (opcional)</label>
                   <input value={articleForm.pdf_url}
                     onChange={e => setArticleForm(f => ({ ...f, pdf_url: e.target.value }))}
-                    className="w-full px-4 py-2.5 bg-[#2c2b2b] border border-white/[0.09] rounded-xl text-white/60 text-sm outline-none focus:border-[#f26822]/45"
+                    className="w-full px-4 py-2.5 bg-[#2c2b2b] border border-white/[0.09] rounded-xl text-white/60 text-sm outline-none focus:border-[#c4501a]/45"
                     placeholder="https://..." />
                 </div>
 
@@ -966,7 +966,7 @@ const AdminDashboard: React.FC = () => {
                 <label className="flex items-center gap-3 cursor-pointer">
                   <div
                     onClick={() => setArticleForm(f => ({ ...f, is_published: !f.is_published }))}
-                    className={`w-10 h-5 rounded-full transition-colors flex items-center px-0.5 ${articleForm.is_published ? 'bg-[#f26822]' : 'bg-white/10'}`}>
+                    className={`w-10 h-5 rounded-full transition-colors flex items-center px-0.5 ${articleForm.is_published ? 'bg-[#c4501a]' : 'bg-white/10'}`}>
                     <div className={`w-4 h-4 rounded-full bg-white shadow transition-transform ${articleForm.is_published ? 'translate-x-5' : 'translate-x-0'}`} />
                   </div>
                   <span className="text-white/60 text-sm">{articleForm.is_published ? 'Publicado' : 'Borrador'}</span>
@@ -978,7 +978,7 @@ const AdminDashboard: React.FC = () => {
                     Cancelar
                   </button>
                   <button type="submit" disabled={savingArticle}
-                    className="flex-1 py-3 bg-[#f26822] hover:bg-[#d45c1a] text-white rounded-xl text-sm font-semibold transition-colors flex items-center justify-center gap-2 shadow-lg shadow-[#f26822]/20">
+                    className="flex-1 py-3 bg-[#c4501a] hover:bg-[#d45c1a] text-white rounded-xl text-sm font-semibold transition-colors flex items-center justify-center gap-2 shadow-lg shadow-[#c4501a]/20">
                     {savingArticle ? <Spinner size="sm" /> : <Check size={15} />}
                     {savingArticle ? 'Guardando...' : editingArticle ? 'Guardar cambios' : 'Publicar artículo'}
                   </button>
@@ -1013,14 +1013,14 @@ const AdminDashboard: React.FC = () => {
                 <div>
                   <label className="text-[10px] uppercase tracking-widest text-white/35 block mb-1.5">Título *</label>
                   <input required value={form.title} onChange={e => setForm(f => ({ ...f, title: e.target.value }))}
-                    className="w-full px-4 py-2.5 bg-[#2c2b2b] border border-white/[0.09] rounded-xl text-white text-sm outline-none focus:border-[#f26822]/45"
+                    className="w-full px-4 py-2.5 bg-[#2c2b2b] border border-white/[0.09] rounded-xl text-white text-sm outline-none focus:border-[#c4501a]/45"
                     placeholder="El Arte de Construir tu Destino" />
                 </div>
 
                 <div>
                   <label className="text-[10px] uppercase tracking-widest text-white/35 block mb-1.5">Descripción *</label>
                   <textarea required value={form.description} onChange={e => setForm(f => ({ ...f, description: e.target.value }))}
-                    rows={3} className="w-full px-4 py-2.5 bg-[#2c2b2b] border border-white/[0.09] rounded-xl text-white text-sm outline-none focus:border-[#f26822]/45 resize-none"
+                    rows={3} className="w-full px-4 py-2.5 bg-[#2c2b2b] border border-white/[0.09] rounded-xl text-white text-sm outline-none focus:border-[#c4501a]/45 resize-none"
                     placeholder="Descripción del libro..." />
                 </div>
 
@@ -1028,7 +1028,7 @@ const AdminDashboard: React.FC = () => {
                   <label className="text-[10px] uppercase tracking-widest text-white/35 block mb-1.5">Precio (COP) *</label>
                   <input required type="number" min="0" value={form.price}
                     onChange={e => setForm(f => ({ ...f, price: e.target.value }))}
-                    className="w-full px-4 py-2.5 bg-[#2c2b2b] border border-white/[0.09] rounded-xl text-white text-sm outline-none focus:border-[#f26822]/45"
+                    className="w-full px-4 py-2.5 bg-[#2c2b2b] border border-white/[0.09] rounded-xl text-white text-sm outline-none focus:border-[#c4501a]/45"
                     placeholder="35000" />
                 </div>
 
@@ -1044,7 +1044,7 @@ const AdminDashboard: React.FC = () => {
                       </button>
                     </div>
                   )}
-                  <label className={`flex items-center gap-3 px-4 py-3 bg-[#2c2b2b] border border-dashed border-white/[0.15] hover:border-[#f26822]/40 rounded-xl cursor-pointer transition-colors ${uploading ? 'opacity-60 pointer-events-none' : ''}`}>
+                  <label className={`flex items-center gap-3 px-4 py-3 bg-[#2c2b2b] border border-dashed border-white/[0.15] hover:border-[#c4501a]/40 rounded-xl cursor-pointer transition-colors ${uploading ? 'opacity-60 pointer-events-none' : ''}`}>
                     {uploading
                       ? <><Spinner size="sm" /><span className="text-white/40 text-sm">Subiendo...</span></>
                       : <><Upload size={15} className="text-white/40" /><span className="text-white/40 text-sm">Subir imagen (JPG, PNG, WebP)</span></>
@@ -1055,7 +1055,7 @@ const AdminDashboard: React.FC = () => {
                   <div className="flex items-center gap-2 mt-2">
                     <ImageIcon size={12} className="text-white/20 flex-shrink-0" />
                     <input value={form.image_url} onChange={e => { setForm(f => ({ ...f, image_url: e.target.value })); setImagePreview(e.target.value || null) }}
-                      className="flex-1 px-3 py-1.5 bg-transparent border-b border-white/[0.07] text-white/40 text-xs outline-none focus:border-[#f26822]/30 placeholder:text-white/20"
+                      className="flex-1 px-3 py-1.5 bg-transparent border-b border-white/[0.07] text-white/40 text-xs outline-none focus:border-[#c4501a]/30 placeholder:text-white/20"
                       placeholder="O pega una URL directamente..." />
                   </div>
                 </div>
@@ -1067,7 +1067,7 @@ const AdminDashboard: React.FC = () => {
                       onChange={e => setForm(prev => {
                         const features = [...prev.features]; features[i] = e.target.value; return { ...prev, features }
                       })}
-                      className="w-full px-4 py-2.5 bg-[#2c2b2b] border border-white/[0.09] rounded-xl text-white text-sm outline-none focus:border-[#f26822]/45 mb-2"
+                      className="w-full px-4 py-2.5 bg-[#2c2b2b] border border-white/[0.09] rounded-xl text-white text-sm outline-none focus:border-[#c4501a]/45 mb-2"
                       placeholder={`Característica ${i + 1}`} />
                   ))}
                 </div>
@@ -1078,7 +1078,7 @@ const AdminDashboard: React.FC = () => {
                     Cancelar
                   </button>
                   <button type="submit" disabled={saving}
-                    className="flex-1 py-3 bg-[#f26822] hover:bg-[#d45c1a] text-white rounded-xl text-sm font-semibold transition-colors flex items-center justify-center gap-2 shadow-lg shadow-[#f26822]/20">
+                    className="flex-1 py-3 bg-[#c4501a] hover:bg-[#d45c1a] text-white rounded-xl text-sm font-semibold transition-colors flex items-center justify-center gap-2 shadow-lg shadow-[#c4501a]/20">
                     {saving ? <Spinner size="sm" /> : <Check size={15} />}
                     {saving ? 'Guardando...' : editing ? 'Guardar cambios' : 'Crear libro'}
                   </button>
@@ -1107,11 +1107,11 @@ const AdminDashboard: React.FC = () => {
             >
               {/* Icon */}
               <div className={`w-11 h-11 rounded-xl flex items-center justify-center mb-4 ${
-                dialog.danger ? 'bg-red-500/10 border border-red-500/20' : 'bg-[#f26822]/10 border border-[#f26822]/20'
+                dialog.danger ? 'bg-red-500/10 border border-red-500/20' : 'bg-[#c4501a]/10 border border-[#c4501a]/20'
               }`}>
                 {dialog.danger
                   ? <AlertCircle size={20} className="text-red-400" />
-                  : <Shield size={20} className="text-[#f26822]" />
+                  : <Shield size={20} className="text-[#c4501a]" />
                 }
               </div>
 
@@ -1130,7 +1130,7 @@ const AdminDashboard: React.FC = () => {
                   className={`flex-1 py-2.5 rounded-xl text-sm font-semibold transition-all ${
                     dialog.danger
                       ? 'bg-red-500 hover:bg-red-600 text-white'
-                      : 'bg-[#f26822] hover:bg-[#d45c1a] text-white'
+                      : 'bg-[#c4501a] hover:bg-[#d45c1a] text-white'
                   }`}
                 >
                   {dialog.danger ? 'Sí, eliminar' : 'Confirmar'}

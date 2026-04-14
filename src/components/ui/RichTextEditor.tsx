@@ -26,7 +26,7 @@ const RichTextEditor: React.FC<Props> = ({ value, onChange, placeholder = 'Escri
       }),
       Underline,
       TextAlign.configure({ types: ['heading', 'paragraph'] }),
-      Link.configure({ openOnClick: false, HTMLAttributes: { class: 'text-[#f26822] underline' } }),
+      Link.configure({ openOnClick: false, HTMLAttributes: { class: 'text-[#c4501a] underline' } }),
       Placeholder.configure({ placeholder }),
     ],
     content: value,
@@ -91,7 +91,7 @@ const RichTextEditor: React.FC<Props> = ({ value, onChange, placeholder = 'Escri
   ]
 
   return (
-    <div className="rounded-xl border border-white/[0.09] bg-[#1a1b1c] overflow-hidden focus-within:border-[#f26822]/45 transition-colors">
+    <div className="rounded-xl border border-white/[0.09] bg-[#1a1b1c] overflow-hidden focus-within:border-[#c4501a]/45 transition-colors">
       {/* Toolbar */}
       <div className="flex flex-wrap items-center gap-0.5 px-2 py-2 border-b border-white/[0.06] bg-[#161718]">
         {groups.map((group, gi) => (
@@ -108,7 +108,7 @@ const RichTextEditor: React.FC<Props> = ({ value, onChange, placeholder = 'Escri
                   btn.disabled
                     ? 'text-white/15 cursor-not-allowed'
                     : btn.active
-                      ? 'bg-[#f26822] text-white'
+                      ? 'bg-[#c4501a] text-white'
                       : 'text-white/50 hover:text-white hover:bg-white/[0.07]'
                 }`}
               >
@@ -137,9 +137,9 @@ const RichTextEditor: React.FC<Props> = ({ value, onChange, placeholder = 'Escri
         .prose-editor ul { list-style: disc; padding-left: 1.4em; margin: 0.6em 0; }
         .prose-editor ol { list-style: decimal; padding-left: 1.4em; margin: 0.6em 0; }
         .prose-editor li { margin: 0.25em 0; }
-        .prose-editor blockquote { border-left: 3px solid #f26822; padding-left: 1em; color: rgba(255,255,255,0.5); margin: 0.8em 0; font-style: italic; }
+        .prose-editor blockquote { border-left: 3px solid #c4501a; padding-left: 1em; color: rgba(255,255,255,0.5); margin: 0.8em 0; font-style: italic; }
         .prose-editor hr { border: none; border-top: 1px solid rgba(255,255,255,0.1); margin: 1.2em 0; }
-        .prose-editor a  { color: #f26822; text-decoration: underline; }
+        .prose-editor a  { color: #c4501a; text-decoration: underline; }
         .prose-editor .is-editor-empty:first-child::before { content: attr(data-placeholder); float: left; color: rgba(255,255,255,0.2); pointer-events: none; height: 0; }
       `}</style>
     </div>

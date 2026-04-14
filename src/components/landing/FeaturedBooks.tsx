@@ -28,8 +28,8 @@ const FeaturedBooks: React.FC = () => {
         >
           <div>
             <div className="flex items-center gap-3 mb-3">
-              <div className="h-px w-8 bg-[#f26822]" />
-              <p className="text-[#f26822] text-xs font-bold uppercase tracking-[0.3em]">
+              <div className="h-px w-8 bg-[#c4501a]" />
+              <p className="text-[#c4501a] text-xs font-bold uppercase tracking-[0.3em]">
                 Publicaciones
               </p>
             </div>
@@ -39,7 +39,7 @@ const FeaturedBooks: React.FC = () => {
           </div>
           <Link
             to="/libros"
-            className="group flex items-center gap-2 text-[#f26822] hover:text-[#d45c1a] font-medium text-sm transition-colors"
+            className="group flex items-center gap-2 text-[#c4501a] hover:text-[#d45c1a] font-medium text-sm transition-colors"
           >
             Ver todos
             <ArrowRight

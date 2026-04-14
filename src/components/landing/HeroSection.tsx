@@ -27,8 +27,8 @@ const HeroSection: React.FC = () => {
       />
 
       {/* Orange atmospheric glow */}
-      <div className="absolute top-0 right-0 w-[700px] h-[700px] bg-[#f26822] opacity-[0.045] rounded-full blur-[140px] pointer-events-none" />
-      <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-[#f26822] opacity-[0.025] rounded-full blur-[100px] pointer-events-none" />
+      <div className="absolute top-0 right-0 w-[700px] h-[700px] bg-[#c4501a] opacity-[0.045] rounded-full blur-[140px] pointer-events-none" />
+      <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-[#c4501a] opacity-[0.025] rounded-full blur-[100px] pointer-events-none" />
 
       <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center py-32">
 
@@ -44,9 +44,9 @@ const HeroSection: React.FC = () => {
             animate={{ scaleX: 1 }}
             transition={{ duration: 0.8, delay: 0.3 }}
             style={{ originX: 1 }}
-            className="h-px w-10 bg-[#f26822]/70"
+            className="h-px w-10 bg-[#c4501a]/70"
           />
-          <p className="text-[#f26822] text-xs font-bold uppercase tracking-[0.3em]">
+          <p className="text-[#c4501a] text-xs font-bold uppercase tracking-[0.3em]">
             Autor · Pensador · Guía
           </p>
           <motion.div
@@ -54,7 +54,7 @@ const HeroSection: React.FC = () => {
             animate={{ scaleX: 1 }}
             transition={{ duration: 0.8, delay: 0.3 }}
             style={{ originX: 0 }}
-            className="h-px w-10 bg-[#f26822]/70"
+            className="h-px w-10 bg-[#c4501a]/70"
           />
         </motion.div>
 
@@ -67,7 +67,7 @@ const HeroSection: React.FC = () => {
         >
           Hernan
           <br />
-          <span className="text-[#f26822]">Figueredo</span>
+          <span className="text-[#c4501a]">Figueredo</span>
         </motion.h1>
 
         {/* Animated divider line that draws in */}
@@ -76,7 +76,7 @@ const HeroSection: React.FC = () => {
           animate={{ scaleX: 1, opacity: 1 }}
           transition={{ duration: 1.4, delay: 0.5, ease: [0.16, 1, 0.3, 1] }}
           style={{ originX: 0.5 }}
-          className="h-px bg-gradient-to-r from-transparent via-[#f26822]/50 to-transparent max-w-sm mx-auto mb-10"
+          className="h-px bg-gradient-to-r from-transparent via-[#c4501a]/50 to-transparent max-w-sm mx-auto mb-10"
         />
 
         {/* Animated subtitle */}
@@ -132,7 +132,7 @@ const HeroSection: React.FC = () => {
         >
           <Link
             to="/libros"
-            className="group inline-flex items-center gap-3 bg-[#f26822] hover:bg-[#d45c1a] text-white font-semibold px-8 py-4 rounded-xl transition-all duration-200 text-base shadow-xl shadow-[#f26822]/20 hover:shadow-[#f26822]/35"
+            className="group inline-flex items-center gap-3 bg-[#c4501a] hover:bg-[#d45c1a] text-white font-semibold px-8 py-4 rounded-xl transition-all duration-200 text-base shadow-xl shadow-[#c4501a]/20 hover:shadow-[#c4501a]/35"
           >
             Ver todos los libros
             <ArrowRight

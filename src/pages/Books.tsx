@@ -38,8 +38,8 @@ const Books: React.FC = () => {
           className="mb-14"
         >
           <div className="flex items-center gap-3 mb-3">
-            <div className="h-px w-8 bg-[#f26822]" />
-            <p className="text-[#f26822] text-xs font-bold uppercase tracking-[0.3em]">
+            <div className="h-px w-8 bg-[#c4501a]" />
+            <p className="text-[#c4501a] text-xs font-bold uppercase tracking-[0.3em]">
               Publicaciones
             </p>
           </div>
@@ -64,7 +64,7 @@ const Books: React.FC = () => {
               placeholder="Buscar por título..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full pl-10 pr-4 py-3 bg-[#1a1b1c] border border-white/[0.09] rounded-xl text-white placeholder:text-white/25 text-sm outline-none focus:border-[#f26822]/45 transition-colors"
+              className="w-full pl-10 pr-4 py-3 bg-[#1a1b1c] border border-white/[0.09] rounded-xl text-white placeholder:text-white/25 text-sm outline-none focus:border-[#c4501a]/45 transition-colors"
             />
             {search && (
               <button
@@ -81,14 +81,14 @@ const Books: React.FC = () => {
             onClick={() => setShowFilters(!showFilters)}
             className={`flex items-center gap-2 px-5 py-3 rounded-xl border text-sm font-medium transition-all duration-200 ${
               showFilters || hasActiveFilters
-                ? 'border-[#f26822]/50 text-[#f26822] bg-[#f26822]/8'
+                ? 'border-[#c4501a]/50 text-[#c4501a] bg-[#c4501a]/8'
                 : 'border-white/[0.09] text-white/50 hover:border-white/25 hover:text-white bg-[#1a1b1c]'
             }`}
           >
             <SlidersHorizontal size={15} />
             Filtrar
             {hasActiveFilters && (
-              <span className="w-1.5 h-1.5 rounded-full bg-[#f26822]" />
+              <span className="w-1.5 h-1.5 rounded-full bg-[#c4501a]" />
             )}
           </button>
         </motion.div>
@@ -115,7 +115,7 @@ const Books: React.FC = () => {
                     onChange={(e) =>
                       setMinPrice(e.target.value ? Number(e.target.value) : undefined)
                     }
-                    className="px-4 py-2.5 bg-[#2c2b2b] border border-white/[0.09] rounded-lg text-white text-sm outline-none focus:border-[#f26822]/45 w-44"
+                    className="px-4 py-2.5 bg-[#2c2b2b] border border-white/[0.09] rounded-lg text-white text-sm outline-none focus:border-[#c4501a]/45 w-44"
                   />
                 </div>
                 <div className="flex flex-col gap-1.5">
@@ -129,7 +129,7 @@ const Books: React.FC = () => {
                     onChange={(e) =>
                       setMaxPrice(e.target.value ? Number(e.target.value) : undefined)
                     }
-                    className="px-4 py-2.5 bg-[#2c2b2b] border border-white/[0.09] rounded-lg text-white text-sm outline-none focus:border-[#f26822]/45 w-44"
+                    className="px-4 py-2.5 bg-[#2c2b2b] border border-white/[0.09] rounded-lg text-white text-sm outline-none focus:border-[#c4501a]/45 w-44"
                   />
                 </div>
                 {hasActiveFilters && (
@@ -172,7 +172,7 @@ const Books: React.FC = () => {
                   setMinPrice(undefined)
                   setMaxPrice(undefined)
                 }}
-                className="mt-6 text-[#f26822] hover:text-[#d45c1a] text-sm font-medium transition-colors"
+                className="mt-6 text-[#c4501a] hover:text-[#d45c1a] text-sm font-medium transition-colors"
               >
                 Limpiar filtros
               </button>

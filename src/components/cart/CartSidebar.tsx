@@ -39,10 +39,10 @@ const CartSidebar: React.FC = () => {
         {/* Header */}
         <div className="flex items-center justify-between px-5 py-4 border-b border-white/10">
           <div className="flex items-center gap-2">
-            <ShoppingCart size={18} className="text-[#f26822]" />
+            <ShoppingCart size={18} className="text-[#c4501a]" />
             <h2 className="font-semibold text-white">Tu carrito</h2>
             {items.length > 0 && (
-              <span className="bg-[#f26822] text-white text-xs font-bold px-2 py-0.5 rounded-full">
+              <span className="bg-[#c4501a] text-white text-xs font-bold px-2 py-0.5 rounded-full">
                 {items.reduce((s, i) => s + i.quantity, 0)}
               </span>
             )}
@@ -69,7 +69,7 @@ const CartSidebar: React.FC = () => {
               <Link
                 to="/libros"
                 onClick={closeCart}
-                className="text-sm font-semibold text-[#f26822] hover:text-[#d45c1a]"
+                className="text-sm font-semibold text-[#c4501a] hover:text-[#d45c1a]"
               >
                 Ver libros
               </Link>
@@ -78,7 +78,7 @@ const CartSidebar: React.FC = () => {
             <>
               {items.map((item) => (
                 <div key={item.service.id} className="flex gap-4 p-3 bg-white/5 rounded-xl border border-white/10">
-                  <div className="w-14 h-14 bg-[#f26822]/10 rounded-lg flex-shrink-0 flex items-center justify-center">
+                  <div className="w-14 h-14 bg-[#c4501a]/10 rounded-lg flex-shrink-0 flex items-center justify-center">
                     {item.service.image_url ? (
                       <img
                         src={item.service.image_url}
@@ -86,13 +86,13 @@ const CartSidebar: React.FC = () => {
                         className="w-full h-full object-cover rounded-lg"
                       />
                     ) : (
-                      <BookOpen size={20} className="text-[#f26822]" />
+                      <BookOpen size={20} className="text-[#c4501a]" />
                     )}
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-semibold text-white line-clamp-1">{item.service.title}</p>
                     <p className="text-xs text-white/40">Libro</p>
-                    <p className="text-sm font-bold text-[#f26822] mt-1">
+                    <p className="text-sm font-bold text-[#c4501a] mt-1">
                       ${(item.service.price * item.quantity).toLocaleString('es-CO')}
                     </p>
                   </div>
@@ -106,14 +106,14 @@ const CartSidebar: React.FC = () => {
                     <div className="flex items-center gap-1">
                       <button
                         onClick={() => updateQuantity(item.service.id, item.quantity - 1)}
-                        className="w-6 h-6 rounded-md bg-white/10 flex items-center justify-center hover:bg-[#f26822]/20 transition-colors text-white"
+                        className="w-6 h-6 rounded-md bg-white/10 flex items-center justify-center hover:bg-[#c4501a]/20 transition-colors text-white"
                       >
                         <Minus size={12} />
                       </button>
                       <span className="text-sm font-semibold w-6 text-center text-white">{item.quantity}</span>
                       <button
                         onClick={() => updateQuantity(item.service.id, item.quantity + 1)}
-                        className="w-6 h-6 rounded-md bg-white/10 flex items-center justify-center hover:bg-[#f26822]/20 transition-colors text-white"
+                        className="w-6 h-6 rounded-md bg-white/10 flex items-center justify-center hover:bg-[#c4501a]/20 transition-colors text-white"
                       >
                         <Plus size={12} />
                       </button>

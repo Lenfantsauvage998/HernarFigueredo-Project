@@ -7,9 +7,9 @@ const CopyButton: React.FC<{ value: string }> = ({ value }) => {
   return (
     <button
       onClick={() => { navigator.clipboard.writeText(value); setCopied(true); setTimeout(() => setCopied(false), 2000) }}
-      className="ml-2 p-1 rounded hover:bg-white/10 text-white/30 hover:text-[#f26822] transition-colors flex-shrink-0"
+      className="ml-2 p-1 rounded hover:bg-white/10 text-white/30 hover:text-[#c4501a] transition-colors flex-shrink-0"
     >
-      {copied ? <Check size={13} className="text-[#f26822]" /> : <Copy size={13} />}
+      {copied ? <Check size={13} className="text-[#c4501a]" /> : <Copy size={13} />}
     </button>
   )
 }
@@ -81,7 +81,7 @@ const CheckoutFailed: React.FC = () => {
               'Contacta a tu banco si el problema persiste',
             ].map((tip) => (
               <li key={tip} className="flex items-start gap-2 text-sm text-white/50">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#f26822] flex-shrink-0 mt-1.5" />
+                <span className="w-1.5 h-1.5 rounded-full bg-[#c4501a] flex-shrink-0 mt-1.5" />
                 {tip}
               </li>
             ))}
@@ -91,7 +91,7 @@ const CheckoutFailed: React.FC = () => {
         <div className="flex flex-col gap-3">
           <Link
             to="/checkout"
-            className="flex items-center justify-center gap-2 bg-[#f26822] hover:bg-[#d45c1a] text-white font-semibold px-6 py-3 rounded-xl transition-colors"
+            className="flex items-center justify-center gap-2 bg-[#c4501a] hover:bg-[#d45c1a] text-white font-semibold px-6 py-3 rounded-xl transition-colors"
           >
             <RotateCcw size={16} />
             Intentar de nuevo

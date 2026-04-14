@@ -40,7 +40,7 @@ const NewsletterSection: React.FC = () => {
     <section className="bg-[#2c2b2b] py-28 relative overflow-hidden">
       <div className="absolute inset-0 opacity-[0.03]"
         style={{ backgroundImage: `radial-gradient(circle at 1px 1px, white 1px, transparent 0)`, backgroundSize: '24px 24px' }} />
-      <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[900px] h-[350px] bg-[#f26822] opacity-[0.04] rounded-full blur-[100px] pointer-events-none" />
+      <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[900px] h-[350px] bg-[#c4501a] opacity-[0.04] rounded-full blur-[100px] pointer-events-none" />
 
       <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <motion.div
@@ -51,9 +51,9 @@ const NewsletterSection: React.FC = () => {
           className="text-center"
         >
           <div className="inline-flex items-center gap-3 mb-7">
-            <div className="h-px w-8 bg-[#f26822]/60" />
-            <span className="text-[#f26822] text-xs font-bold uppercase tracking-[0.3em]">Newsletter</span>
-            <div className="h-px w-8 bg-[#f26822]/60" />
+            <div className="h-px w-8 bg-[#c4501a]/60" />
+            <span className="text-[#c4501a] text-xs font-bold uppercase tracking-[0.3em]">Newsletter</span>
+            <div className="h-px w-8 bg-[#c4501a]/60" />
           </div>
 
           <h2 className="text-4xl md:text-5xl font-bold text-white mb-4 leading-tight">
@@ -81,9 +81,9 @@ const NewsletterSection: React.FC = () => {
               >
                 <input type="email" value={email} onChange={e => setEmail(e.target.value)}
                   placeholder="tu@email.com" required
-                  className="flex-1 px-5 py-3.5 bg-white/[0.05] border border-white/[0.1] rounded-xl text-white placeholder:text-white/22 text-sm outline-none focus:border-[#f26822]/45 focus:bg-white/[0.07] transition-all duration-200" />
+                  className="flex-1 px-5 py-3.5 bg-white/[0.05] border border-white/[0.1] rounded-xl text-white placeholder:text-white/22 text-sm outline-none focus:border-[#c4501a]/45 focus:bg-white/[0.07] transition-all duration-200" />
                 <button type="submit" disabled={loading}
-                  className="flex items-center justify-center gap-2 bg-[#f26822] hover:bg-[#d45c1a] active:scale-95 text-white font-semibold px-6 py-3.5 rounded-xl transition-all duration-200 text-sm whitespace-nowrap shadow-lg shadow-[#f26822]/20 disabled:opacity-60 disabled:pointer-events-none">
+                  className="flex items-center justify-center gap-2 bg-[#c4501a] hover:bg-[#d45c1a] active:scale-95 text-white font-semibold px-6 py-3.5 rounded-xl transition-all duration-200 text-sm whitespace-nowrap shadow-lg shadow-[#c4501a]/20 disabled:opacity-60 disabled:pointer-events-none">
                   {loading ? 'Guardando...' : <><span>Suscribirme</span><ArrowRight size={15} /></>}
                 </button>
               </motion.form>

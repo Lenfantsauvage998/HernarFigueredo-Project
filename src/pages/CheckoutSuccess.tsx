@@ -109,9 +109,9 @@ const CopyButton: React.FC<{ value: string }> = ({ value }) => {
   return (
     <button
       onClick={() => { navigator.clipboard.writeText(value); setCopied(true); setTimeout(() => setCopied(false), 2000) }}
-      className="ml-2 p-1 rounded hover:bg-white/10 text-white/30 hover:text-[#f26822] transition-colors flex-shrink-0"
+      className="ml-2 p-1 rounded hover:bg-white/10 text-white/30 hover:text-[#c4501a] transition-colors flex-shrink-0"
     >
-      {copied ? <Check size={13} className="text-[#f26822]" /> : <Copy size={13} />}
+      {copied ? <Check size={13} className="text-[#c4501a]" /> : <Copy size={13} />}
     </button>
   )
 }
@@ -176,7 +176,7 @@ const SuccessContent: React.FC<{
             {canRefresh && (
               <button
                 onClick={onRefresh}
-                className="mb-4 w-full border border-[#f26822]/30 text-[#f26822] hover:bg-[#f26822]/10 font-semibold text-sm px-5 py-2.5 rounded-xl transition-colors"
+                className="mb-4 w-full border border-[#c4501a]/30 text-[#c4501a] hover:bg-[#c4501a]/10 font-semibold text-sm px-5 py-2.5 rounded-xl transition-colors"
               >
                 Verificar de nuevo
               </button>
@@ -187,7 +187,7 @@ const SuccessContent: React.FC<{
         <div className="flex flex-col gap-3">
           <Link
             to="/dashboard?new=1"
-            className="flex items-center justify-center gap-2 bg-[#f26822] hover:bg-[#d45c1a] text-white font-semibold px-6 py-3 rounded-xl transition-colors"
+            className="flex items-center justify-center gap-2 bg-[#c4501a] hover:bg-[#d45c1a] text-white font-semibold px-6 py-3 rounded-xl transition-colors"
           >
             <LayoutDashboard size={16} />
             Ver mis órdenes
