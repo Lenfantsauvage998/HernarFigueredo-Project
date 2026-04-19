@@ -159,7 +159,20 @@ const ArticleDetail: React.FC = () => {
   })
 
   return (
-    <div className="min-h-screen bg-[#2c2b2b]">
+    <div
+      className="min-h-screen bg-[#2c2b2b] select-none"
+      onContextMenu={(e) => e.preventDefault()}
+      onCopy={(e) => e.preventDefault()}
+      onCut={(e) => e.preventDefault()}
+      onKeyDown={(e) => {
+        if (
+          (e.ctrlKey || e.metaKey) &&
+          ['c', 'a', 'x', 'u', 's', 'p'].includes(e.key.toLowerCase())
+        ) {
+          e.preventDefault()
+        }
+      }}
+    >
 
       {/* ── Hero cover image ─────────────────────────────── */}
       {article.cover_url && (
