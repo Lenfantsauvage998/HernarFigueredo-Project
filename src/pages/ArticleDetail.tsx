@@ -6,6 +6,7 @@ import { supabase } from '../lib/supabase'
 import { useBooks } from '../hooks/useBooks'
 import type { Article } from '../types'
 import Spinner from '../components/ui/Spinner'
+import CommentSection from '../components/articles/CommentSection'
 
 const CAT_COLOR: Record<string, string> = {
   Mentalidad:    '#f26822',
@@ -353,6 +354,9 @@ const ArticleDetail: React.FC = () => {
           </div>
         </div>
       )}
+
+      {/* ── Comments ─────────────────────────────────────── */}
+      <CommentSection articleId={article.id} />
 
       {/* ── Back to all ──────────────────────────────────── */}
       <div className="max-w-2xl mx-auto px-4 pb-24 pt-4">
