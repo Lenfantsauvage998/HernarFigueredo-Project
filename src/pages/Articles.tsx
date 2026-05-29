@@ -313,7 +313,7 @@ const ArticleRow: React.FC<{ article: Article }> = ({ article }) => {
               <Download size={11} /> Descargable
             </span>
           )}
-          <span className="ml-auto flex items-center gap-1 text-white/25 group-hover:text-[#f26822] text-xs font-medium transition-colors">
+<span className="ml-auto flex items-center gap-1 text-white/25 group-hover:text-[#f26822] text-xs font-medium transition-colors">
             Leer <ArrowRight size={12} className="group-hover:translate-x-0.5 transition-transform" />
           </span>
         </div>
