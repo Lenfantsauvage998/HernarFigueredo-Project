@@ -33,7 +33,7 @@ const RichTextEditor: React.FC<Props> = ({ value, onChange, placeholder = 'Escri
     onUpdate: ({ editor }) => onChange(editor.getHTML()),
     editorProps: {
       attributes: {
-        class: 'outline-none min-h-[320px] text-white/80 leading-relaxed prose-editor px-1',
+        class: 'outline-none min-h-[320px] text-white/80 leading-normal prose-editor px-1',
       },
     },
   })
@@ -128,8 +128,8 @@ const RichTextEditor: React.FC<Props> = ({ value, onChange, placeholder = 'Escri
       <style>{`
         .prose-editor h2 { color: #fff; font-size: 1.35rem; font-weight: 700; margin: 1.2em 0 0.5em; line-height: 1.3; }
         .prose-editor h3 { color: #fff; font-size: 1.1rem; font-weight: 700; margin: 1em 0 0.4em; line-height: 1.3; }
-        .prose-editor p  { margin: 0 0 0.75em; }
-        .prose-editor p:last-child { margin-bottom: 0; }
+        .prose-editor p  { margin: 0; }
+        .prose-editor p + p { margin-top: 0; }
         .prose-editor strong { color: #fff; font-weight: 600; }
         .prose-editor em { font-style: italic; }
         .prose-editor u  { text-decoration: underline; }
