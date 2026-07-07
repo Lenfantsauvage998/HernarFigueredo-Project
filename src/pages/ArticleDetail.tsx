@@ -237,6 +237,9 @@ const ArticleDetail: React.FC = () => {
               <Headphones size={16} style={{ color }} />
             </div>
             <div className="flex-1 min-w-0">
+              <p className="text-white/40 text-[11px] uppercase tracking-widest mb-1.5">
+                No lo puedes leer? Escúchalo
+              </p>
               <audio src={article.audio_url} controls className="w-full h-9" />
             </div>
           </div>
