@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useParams, Link, useNavigate } from 'react-router-dom'
 import { motion } from 'motion/react'
-import { ArrowLeft, ArrowRight, Clock, Download, BookOpen } from 'lucide-react'
+import { ArrowLeft, ArrowRight, Clock, Download, BookOpen, Headphones } from 'lucide-react'
 
 const WhatsAppShareIcon = () => (
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="16" height="16" aria-hidden="true">
@@ -229,6 +229,21 @@ const ArticleDetail: React.FC = () => {
           style={{ borderColor: color }}>
           {article.excerpt}
         </p>
+
+        {article.audio_url && (
+          <div className="flex items-center gap-3 bg-[#1a1b1c] border border-white/[0.08] rounded-2xl p-4 mb-10">
+            <div className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0"
+              style={{ background: `${color}1A`, border: `1px solid ${color}33` }}>
+              <Headphones size={16} style={{ color }} />
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-white/40 text-[11px] uppercase tracking-widest mb-1.5">
+                ¿No te gusta leer? Escúchalo
+              </p>
+              <audio src={article.audio_url} controls className="w-full h-9" />
+            </div>
+          </div>
+        )}
 
         <motion.div
           initial={{ scaleX: 0 }} animate={{ scaleX: 1 }} transition={{ duration: 0.5, delay: 0.2 }}

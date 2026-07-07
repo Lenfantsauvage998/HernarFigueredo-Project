@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { MessageCircle, Trash2, Send, AlertCircle } from 'lucide-react'
+import { MessageCircle, Trash2, Send, AlertCircle, Reply, CornerDownRight } from 'lucide-react'
 import { motion, AnimatePresence } from 'motion/react'
 import { supabase } from '../../lib/supabase'
 import { useAuthStore } from '../../store/authStore'
@@ -10,6 +10,8 @@ interface Comment {
   author_name: string
   content: string
   created_at: string
+  parent_id: string | null
+  is_admin_reply: boolean
 }
 
 interface Props {
@@ -31,7 +33,10 @@ const CommentSection: React.FC<Props> = ({ articleId }) => {
   const [error, setError]         = useState('')
   const [success, setSuccess]     = useState(false)
   const [confirm, setConfirm]     = useState<ConfirmState>({ open: false, commentId: null, authorName: '' })
-  const { isAdmin } = useAuthStore()
+  const [replyingTo, setReplyingTo] = useState<string | null>(null)
+  const [replyText, setReplyText]   = useState('')
+  const [submittingReply, setSubmittingReply] = useState(false)
+  const { isAdmin, user } = useAuthStore()
 
   const fetchComments = async () => {
     const { data } = await supabase
@@ -41,6 +46,26 @@ const CommentSection: React.FC<Props> = ({ articleId }) => {
       .order('created_at', { ascending: true })
     setComments((data ?? []) as Comment[])
     setLoading(false)
+  }
+
+  const topLevel = comments.filter(c => !c.parent_id)
+  const repliesOf = (id: string) => comments.filter(c => c.parent_id === id)
+
+  const handleReplySubmit = async (parentId: string) => {
+    if (!replyText.trim()) return
+    setSubmittingReply(true)
+    const { error: err } = await supabase.from('comments').insert({
+      article_id:     articleId,
+      author_name:    user?.name || 'Hernan Figueredo',
+      content:        replyText.trim(),
+      parent_id:      parentId,
+      is_admin_reply: true,
+    })
+    setSubmittingReply(false)
+    if (err) return
+    setReplyText('')
+    setReplyingTo(null)
+    fetchComments()
   }
 
   useEffect(() => { fetchComments() }, [articleId])
@@ -110,7 +135,7 @@ const CommentSection: React.FC<Props> = ({ articleId }) => {
       ) : (
         <AnimatePresence initial={false}>
           <ul className="space-y-4 mb-10">
-            {comments.map(c => (
+            {topLevel.map(c => (
               <motion.li
                 key={c.id}
                 initial={{ opacity: 0, y: 10 }}
@@ -152,6 +177,83 @@ const CommentSection: React.FC<Props> = ({ articleId }) => {
                 <p className="text-white/60 text-sm leading-relaxed mt-3 pl-11">
                   {c.content}
                 </p>
+
+                {/* Admin reply trigger */}
+                {isAdmin() && (
+                  <button
+                    onClick={() => { setReplyingTo(replyingTo === c.id ? null : c.id); setReplyText('') }}
+                    className="flex items-center gap-1.5 text-[#f26822]/70 hover:text-[#f26822] text-xs font-medium mt-3 pl-11 transition-colors"
+                  >
+                    <Reply size={12} /> Responder
+                  </button>
+                )}
+
+                {/* Inline reply form */}
+                {replyingTo === c.id && (
+                  <div className="mt-3 pl-11">
+                    <textarea
+                      value={replyText}
+                      onChange={e => setReplyText(e.target.value)}
+                      rows={2}
+                      maxLength={1000}
+                      placeholder="Escribe tu respuesta..."
+                      className="w-full px-3 py-2 bg-[#2c2b2b] border border-white/[0.09] rounded-xl text-white text-sm placeholder:text-white/20 outline-none focus:border-[#f26822]/40 transition-colors resize-none"
+                    />
+                    <div className="flex gap-2 mt-2">
+                      <button
+                        onClick={() => handleReplySubmit(c.id)}
+                        disabled={submittingReply || !replyText.trim()}
+                        className="flex items-center gap-1.5 px-3 py-1.5 bg-[#f26822] hover:bg-[#f26822]/90 disabled:opacity-40 text-white text-xs font-semibold rounded-lg transition-all"
+                      >
+                        <Send size={11} /> {submittingReply ? 'Enviando…' : 'Enviar'}
+                      </button>
+                      <button
+                        onClick={() => { setReplyingTo(null); setReplyText('') }}
+                        className="px-3 py-1.5 text-white/40 hover:text-white text-xs font-medium transition-colors"
+                      >
+                        Cancelar
+                      </button>
+                    </div>
+                  </div>
+                )}
+
+                {/* Replies */}
+                {repliesOf(c.id).length > 0 && (
+                  <ul className="mt-4 pl-11 space-y-3">
+                    {repliesOf(c.id).map(r => (
+                      <li key={r.id} className="flex gap-2 group/reply">
+                        <CornerDownRight size={14} className="text-white/15 flex-shrink-0 mt-1" />
+                        <div className="flex-1 min-w-0 bg-[#f26822]/[0.04] border border-[#f26822]/10 rounded-xl p-4">
+                          <div className="flex items-start justify-between gap-3">
+                            <div className="flex items-center gap-2 min-w-0">
+                              <span className="text-white text-sm font-semibold">{r.author_name}</span>
+                              {r.is_admin_reply && (
+                                <span className="text-[9px] font-bold px-1.5 py-0.5 bg-[#f26822]/15 border border-[#f26822]/30 text-[#f26822] rounded-md uppercase tracking-wide">
+                                  Autor
+                                </span>
+                              )}
+                              <span className="text-white/20 text-xs">
+                                {new Date(r.created_at).toLocaleDateString('es-CO', {
+                                  year: 'numeric', month: 'short', day: 'numeric',
+                                })}
+                              </span>
+                            </div>
+                            {isAdmin() && (
+                              <button
+                                onClick={() => setConfirm({ open: true, commentId: r.id, authorName: r.author_name })}
+                                className="opacity-0 group-hover/reply:opacity-100 p-1 rounded-lg text-red-400/60 hover:text-red-400 hover:bg-red-500/10 transition-all flex-shrink-0"
+                                title="Eliminar respuesta"
+                              >
+                                <Trash2 size={12} />
+                              </button>
+                            )}
+                          </div>
+                          <p className="text-white/60 text-sm leading-relaxed mt-2">{r.content}</p>
+                        </div>
+                      </li>
+                    ))}
+                  </ul>
+                )}
               </motion.li>
             ))}
           </ul>

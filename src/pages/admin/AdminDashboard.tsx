@@ -5,7 +5,7 @@ import {
   BookOpen, ShoppingBag, TrendingUp, Plus, Edit2, Trash2,
   X, Check, ChevronDown, Package, Upload, Image as ImageIcon,
   Users, Mail, Shield, ShieldOff, Send, UserX, CheckCircle,
-  AlertCircle, RefreshCw, FileText, ExternalLink
+  AlertCircle, RefreshCw, FileText, ExternalLink, Settings, Bell, Mic
 } from 'lucide-react'
 import Spinner from '../../components/ui/Spinner'
 import RichTextEditor from '../../components/ui/RichTextEditor'
@@ -38,7 +38,7 @@ interface Order {
   items: { service_title: string; quantity: number; price: number }[]
 }
 
-type Tab = 'books' | 'orders' | 'users' | 'newsletter' | 'articles'
+type Tab = 'books' | 'orders' | 'users' | 'newsletter' | 'articles' | 'settings'
 
 // ─── Book Form ────────────────────────────────────────────────
 const emptyForm = {
@@ -114,19 +114,47 @@ const AdminDashboard: React.FC = () => {
   const [editingArticle, setEditingArticle] = useState<Article | null>(null)
   const [articleForm, setArticleForm] = useState({
     title: '', slug: '', excerpt: '', category: 'Mentalidad',
-    content: '', pdf_url: '', cover_url: '', read_time: '5', is_published: true,
+    content: '', pdf_url: '', cover_url: '', audio_url: '', read_time: '5', is_published: true,
   })
   const [savingArticle, setSavingArticle] = useState(false)
   const [deletingArticle, setDeletingArticle] = useState<string | null>(null)
   const [uploadingCover, setUploadingCover] = useState(false)
   const [coverPreview, setCoverPreview] = useState<string | null>(null)
+  const [uploadingAudio, setUploadingAudio] = useState(false)
+  const [audioPreview, setAudioPreview] = useState<string | null>(null)
+
+  // Settings
+  const [commentNotifsEnabled, setCommentNotifsEnabled] = useState(true)
+  const [notificationEmail, setNotificationEmail] = useState('')
+  const [savingSettings, setSavingSettings] = useState(false)
+  const [settingsSaved, setSettingsSaved] = useState(false)
 
   useEffect(() => { fetchAll() }, [])
 
   const fetchAll = async () => {
     setLoading(true)
-    await Promise.all([fetchBooks(), fetchOrders(), fetchUsers(), fetchSubscribers(), fetchArticles()])
+    await Promise.all([fetchBooks(), fetchOrders(), fetchUsers(), fetchSubscribers(), fetchArticles(), fetchSettings()])
     setLoading(false)
+  }
+
+  const fetchSettings = async () => {
+    const { data, error } = await supabase
+      .from('app_settings').select('comment_notifications_enabled, notification_email').eq('id', 1).single()
+    if (error) { console.error('fetchSettings:', error); return }
+    setCommentNotifsEnabled(data.comment_notifications_enabled)
+    setNotificationEmail(data.notification_email ?? '')
+  }
+
+  const saveSettings = async () => {
+    setSavingSettings(true); setSettingsSaved(false)
+    const { error } = await supabase.from('app_settings').update({
+      comment_notifications_enabled: commentNotifsEnabled,
+      notification_email: notificationEmail.trim() || null,
+    }).eq('id', 1)
+    setSavingSettings(false)
+    if (error) { setActionError(error.message); return }
+    setSettingsSaved(true)
+    setTimeout(() => setSettingsSaved(false), 3000)
   }
 
   const fetchBooks = async () => {
@@ -173,8 +201,9 @@ const AdminDashboard: React.FC = () => {
   const openCreateArticle = () => {
     setEditingArticle(null)
     setArticleForm({ title: '', slug: '', excerpt: '', category: 'Mentalidad',
-      content: '', pdf_url: '', cover_url: '', read_time: '5', is_published: true })
+      content: '', pdf_url: '', cover_url: '', audio_url: '', read_time: '5', is_published: true })
     setCoverPreview(null)
+    setAudioPreview(null)
     setShowArticleForm(true)
   }
 
@@ -182,8 +211,9 @@ const AdminDashboard: React.FC = () => {
     setEditingArticle(a)
     setArticleForm({ title: a.title, slug: a.slug, excerpt: a.excerpt,
       category: a.category, content: a.content, pdf_url: a.pdf_url ?? '',
-      cover_url: a.cover_url ?? '', read_time: String(a.read_time), is_published: a.is_published })
+      cover_url: a.cover_url ?? '', audio_url: a.audio_url ?? '', read_time: String(a.read_time), is_published: a.is_published })
     setCoverPreview(a.cover_url ?? null)
+    setAudioPreview(a.audio_url ?? null)
     setShowArticleForm(true)
   }
 
@@ -200,6 +230,19 @@ const AdminDashboard: React.FC = () => {
     setUploadingCover(false)
   }
 
+  const handleAudioUpload = async (file: File) => {
+    if (!file) return
+    setUploadingAudio(true)
+    const ext = file.name.split('.').pop()
+    const path = `articles/audio/${Date.now()}.${ext}`
+    const { error } = await supabase.storage.from(BUCKET).upload(path, file, { upsert: true })
+    if (error) { console.error(error); setUploadingAudio(false); return }
+    const { data } = supabase.storage.from(BUCKET).getPublicUrl(path)
+    setArticleForm(f => ({ ...f, audio_url: data.publicUrl }))
+    setAudioPreview(data.publicUrl)
+    setUploadingAudio(false)
+  }
+
   const saveArticle = async (e: React.FormEvent) => {
     e.preventDefault(); setSavingArticle(true)
     const payload = {
@@ -210,6 +253,7 @@ const AdminDashboard: React.FC = () => {
       content: articleForm.content.trim(),
       cover_url: articleForm.cover_url.trim() || null,
       pdf_url: articleForm.pdf_url.trim() || null,
+      audio_url: articleForm.audio_url.trim() || null,
       read_time: Number(articleForm.read_time) || 5,
       is_published: articleForm.is_published,
     }
@@ -388,6 +432,7 @@ const AdminDashboard: React.FC = () => {
     { key: 'orders',     label: 'Órdenes',      icon: ShoppingBag },
     { key: 'users',      label: 'Usuarios',     icon: Users       },
     { key: 'newsletter', label: 'Newsletter',   icon: Mail        },
+    { key: 'settings',   label: 'Ajustes',      icon: Settings    },
   ]
 
   // ─── Render ───────────────────────────────────────────────
@@ -835,6 +880,65 @@ const AdminDashboard: React.FC = () => {
                 </div>
               </motion.div>
             )}
+
+            {/* ── SETTINGS TAB ── */}
+            {tab === 'settings' && (
+              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="max-w-xl">
+                <div className="bg-[#1a1b1c] border border-white/[0.07] rounded-2xl p-6">
+                  <h3 className="text-white font-semibold mb-1 flex items-center gap-2">
+                    <Bell size={16} className="text-[#f26822]" />
+                    Notificaciones de comentarios
+                  </h3>
+                  <p className="text-white/35 text-xs mb-6">
+                    Recibe un email cada vez que alguien comenta en un artículo.
+                  </p>
+
+                  {/* Enable toggle */}
+                  <label className="flex items-center gap-3 cursor-pointer mb-6">
+                    <div
+                      onClick={() => setCommentNotifsEnabled(v => !v)}
+                      className={`w-10 h-5 rounded-full transition-colors flex items-center px-0.5 ${commentNotifsEnabled ? 'bg-[#f26822]' : 'bg-white/10'}`}>
+                      <div className={`w-4 h-4 rounded-full bg-white shadow transition-transform ${commentNotifsEnabled ? 'translate-x-5' : 'translate-x-0'}`} />
+                    </div>
+                    <span className="text-white/60 text-sm">
+                      {commentNotifsEnabled ? 'Notificaciones activadas' : 'Notificaciones desactivadas'}
+                    </span>
+                  </label>
+
+                  {/* Recipient email */}
+                  <div className="mb-6">
+                    <label className="text-[10px] uppercase tracking-widest text-white/35 block mb-1.5">
+                      Email de destino (opcional)
+                    </label>
+                    <input
+                      type="email"
+                      value={notificationEmail}
+                      onChange={e => setNotificationEmail(e.target.value)}
+                      disabled={!commentNotifsEnabled}
+                      placeholder="Vacío = todos los admins registrados"
+                      className="w-full px-4 py-2.5 bg-[#2c2b2b] border border-white/[0.09] rounded-xl text-white text-sm outline-none focus:border-[#f26822]/45 placeholder:text-white/20 disabled:opacity-40"
+                    />
+                    <p className="text-white/20 text-xs mt-1.5">
+                      Si lo dejas vacío, se le avisa a todos los usuarios con rol admin.
+                    </p>
+                  </div>
+
+                  {settingsSaved && (
+                    <div className="flex items-center gap-2 text-emerald-400 text-sm bg-emerald-500/10 border border-emerald-500/20 rounded-xl px-4 py-3 mb-4">
+                      <CheckCircle size={15} /> Ajustes guardados
+                    </div>
+                  )}
+
+                  <button
+                    onClick={saveSettings}
+                    disabled={savingSettings}
+                    className="flex items-center justify-center gap-2 bg-[#f26822] hover:bg-[#d45c1a] text-white text-sm font-semibold px-5 py-2.5 rounded-xl transition-colors shadow-lg shadow-[#f26822]/20 disabled:opacity-50">
+                    {savingSettings ? <Spinner size="sm" /> : <Check size={15} />}
+                    {savingSettings ? 'Guardando...' : 'Guardar ajustes'}
+                  </button>
+                </div>
+              </motion.div>
+            )}
           </>
         )}
       </div>
@@ -960,6 +1064,42 @@ const AdminDashboard: React.FC = () => {
                     onChange={e => setArticleForm(f => ({ ...f, pdf_url: e.target.value }))}
                     className="w-full px-4 py-2.5 bg-[#2c2b2b] border border-white/[0.09] rounded-xl text-white/60 text-sm outline-none focus:border-[#f26822]/45"
                     placeholder="https://..." />
+                </div>
+
+                {/* Audio narration */}
+                <div>
+                  <label className="text-[10px] uppercase tracking-widest text-white/35 block mb-1.5">Audio narrado (opcional)</label>
+                  {audioPreview && (
+                    <div className="relative mb-2 flex items-center gap-2">
+                      <audio src={audioPreview} controls className="w-full h-10" />
+                      <button type="button"
+                        onClick={() => { setAudioPreview(null); setArticleForm(f => ({ ...f, audio_url: '' })) }}
+                        className="w-7 h-7 flex-shrink-0 bg-black/40 rounded-full flex items-center justify-center text-white hover:bg-red-500/80 transition-colors">
+                        <X size={12} />
+                      </button>
+                    </div>
+                  )}
+                  <label className={`flex items-center gap-3 px-4 py-3 bg-[#2c2b2b] border border-dashed border-white/[0.15] hover:border-[#f26822]/40 rounded-xl cursor-pointer transition-colors ${uploadingAudio ? 'opacity-60 pointer-events-none' : ''}`}>
+                    {uploadingAudio
+                      ? <><Spinner size="sm" /><span className="text-white/40 text-sm">Subiendo...</span></>
+                      : <><Mic size={15} className="text-white/40" /><span className="text-white/40 text-sm">Subir grabación de audio (MP3, WAV)</span></>
+                    }
+                    <input type="file" accept="audio/*" className="hidden"
+                      onChange={e => { const f = e.target.files?.[0]; if (f) handleAudioUpload(f) }} />
+                  </label>
+                  <div className="flex items-center gap-2 mt-2">
+                    <Mic size={12} className="text-white/20 flex-shrink-0" />
+                    <input value={articleForm.audio_url}
+                      onChange={e => { setArticleForm(f => ({ ...f, audio_url: e.target.value })); setAudioPreview(e.target.value || null) }}
+                      className="flex-1 px-3 py-1.5 bg-transparent border-b border-white/[0.07] text-white/40 text-xs outline-none focus:border-[#f26822]/30 placeholder:text-white/20"
+                      placeholder="O pega una URL de audio..." />
+                  </div>
+                  <div className="flex items-start gap-1.5 mt-2">
+                    <AlertCircle size={11} className="text-amber-400/60 flex-shrink-0 mt-0.5" />
+                    <p className="text-amber-400/60 text-[11px] leading-relaxed">
+                      Máximo 20MB por archivo.
+                    </p>
+                  </div>
                 </div>
 
                 {/* Published toggle */}

@@ -80,6 +80,7 @@ export interface Article {
   content: string
   cover_url: string | null
   pdf_url: string | null
+  audio_url: string | null
   read_time: number
   is_published: boolean
   published_at: string
