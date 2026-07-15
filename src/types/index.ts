@@ -1,5 +1,7 @@
 export type Role = 'user' | 'admin'
 
+export type BookFormat = 'FISICO' | 'EPUB'
+
 export type OrderStatus = 'PENDING' | 'PROCESSING' | 'COMPLETED' | 'CANCELLED'
 
 export type PaymentStatus = 'PENDING' | 'APPROVED' | 'DECLINED' | 'VOIDED' | 'ERROR'
@@ -25,6 +27,8 @@ export interface Book {
   description: string
   category: 'LIBRO'
   price: number
+  epub_price: number | null
+  epub_url: string | null
   image_url: string | null
   image_urls: string[]
   features: string[]
@@ -39,6 +43,7 @@ export interface OrderItem {
   service_id: string
   quantity: number
   price: number
+  format?: BookFormat
   service?: Book
 }
 
@@ -69,6 +74,7 @@ export interface Payment {
 export interface CartItem {
   service: Book
   quantity: number
+  format: BookFormat
 }
 
 export interface Article {

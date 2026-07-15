@@ -28,11 +28,20 @@ const BookCard: React.FC<BookCardProps> = ({ book, onClick }) => {
       {/* Book cover */}
       <div className="relative h-72 overflow-hidden bg-[#1a1b1c]">
         {book.image_url ? (
-          <img
-            src={book.image_url}
-            alt={book.title}
-            className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
-          />
+          <>
+            {/* Blurred backdrop fills the letterbox space behind the cover */}
+            <img
+              src={book.image_url}
+              alt=""
+              aria-hidden="true"
+              className="absolute inset-0 w-full h-full object-cover scale-125 blur-2xl opacity-50"
+            />
+            <img
+              src={book.image_url}
+              alt={book.title}
+              className="relative w-full h-full object-contain transition-transform duration-700 ease-out group-hover:scale-110"
+            />
+          </>
         ) : (
           <div className="w-full h-full bg-gradient-to-br from-[#2a1e14] via-[#1a1b1c] to-[#0d0d0e] flex flex-col items-center justify-center gap-4 relative">
             {/* Book spine accent */}

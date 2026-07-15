@@ -9,6 +9,7 @@ import {
 } from 'lucide-react'
 import Spinner from '../../components/ui/Spinner'
 import RichTextEditor from '../../components/ui/RichTextEditor'
+import ImageCropModal from '../../components/ui/ImageCropModal'
 import type { Book, Article } from '../../types'
 
 // ─── Types ───────────────────────────────────────────────────
@@ -42,7 +43,7 @@ type Tab = 'books' | 'orders' | 'users' | 'newsletter' | 'articles' | 'settings'
 
 // ─── Book Form ────────────────────────────────────────────────
 const emptyForm = {
-  title: '', description: '', price: '', features: ['', '', ''], image_url: ''
+  title: '', description: '', price: '', epub_price: '', epub_url: '', features: ['', '', ''], image_url: ''
 }
 
 const BUCKET = 'service-images'
@@ -92,6 +93,9 @@ const AdminDashboard: React.FC = () => {
   const [uploading, setUploading] = useState(false)
   const [imagePreview, setImagePreview] = useState<string | null>(null)
   const [deleting, setDeleting] = useState<string | null>(null)
+  const [cropFile, setCropFile] = useState<File | null>(null)
+  const [urlCropLoading, setUrlCropLoading] = useState(false)
+  const [urlCropError, setUrlCropError] = useState('')
 
   // Orders
   const [expandedOrder, setExpandedOrder] = useState<string | null>(null)
@@ -285,14 +289,16 @@ const AdminDashboard: React.FC = () => {
   const openEdit = (book: Book) => {
     setEditing(book)
     setForm({ title: book.title, description: book.description, price: String(book.price),
+      epub_price: book.epub_price != null ? String(book.epub_price) : '',
+      epub_url: book.epub_url ?? '',
       features: [...book.features, '', '', ''].slice(0, 3), image_url: book.image_url ?? '' })
     setImagePreview(book.image_url ?? null)
     setShowForm(true)
   }
-  const handleImageUpload = async (file: File) => {
+  const handleImageUpload = async (file: File | Blob) => {
     if (!file) return
     setUploading(true)
-    const ext = file.name.split('.').pop()
+    const ext = file instanceof File ? file.name.split('.').pop() : 'jpg'
     const path = `books/${Date.now()}.${ext}`
     const { error } = await supabase.storage.from(BUCKET).upload(path, file, { upsert: true })
     if (error) { console.error(error); setUploading(false); return }
@@ -301,10 +307,26 @@ const AdminDashboard: React.FC = () => {
     setImagePreview(data.publicUrl)
     setUploading(false)
   }
+  const handleCropFromUrl = async () => {
+    if (!form.image_url.trim()) return
+    setUrlCropError('')
+    setUrlCropLoading(true)
+    try {
+      const res = await fetch(form.image_url)
+      if (!res.ok) throw new Error('fetch failed')
+      const blob = await res.blob()
+      setCropFile(new File([blob], 'cover.jpg', { type: blob.type || 'image/jpeg' }))
+    } catch {
+      setUrlCropError('No se pudo cargar esa imagen para recortar (el sitio la bloquea). Descárgala y súbela como archivo para recortarla.')
+    }
+    setUrlCropLoading(false)
+  }
   const saveBook = async (e: React.FormEvent) => {
     e.preventDefault(); setSaving(true)
     const payload = { title: form.title.trim(), description: form.description.trim(),
-      price: Number(form.price), features: form.features.filter(f => f.trim()),
+      price: Number(form.price), epub_price: form.epub_price.trim() ? Number(form.epub_price) : null,
+      epub_url: form.epub_url.trim() || null,
+      features: form.features.filter(f => f.trim()),
       image_url: form.image_url.trim() || null, category: 'LIBRO', is_active: true }
     if (editing) await supabase.from('services').update(payload).eq('id', editing.id)
     else await supabase.from('services').insert(payload)
@@ -1164,12 +1186,29 @@ const AdminDashboard: React.FC = () => {
                     placeholder="Descripción del libro..." />
                 </div>
 
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="text-[10px] uppercase tracking-widest text-white/35 block mb-1.5">Precio físico (COP) *</label>
+                    <input required type="number" min="0" value={form.price}
+                      onChange={e => setForm(f => ({ ...f, price: e.target.value }))}
+                      className="w-full px-4 py-2.5 bg-[#2c2b2b] border border-white/[0.09] rounded-xl text-white text-sm outline-none focus:border-[#f26822]/45"
+                      placeholder="35000" />
+                  </div>
+                  <div>
+                    <label className="text-[10px] uppercase tracking-widest text-white/35 block mb-1.5">Precio EPUB (COP)</label>
+                    <input type="number" min="0" value={form.epub_price}
+                      onChange={e => setForm(f => ({ ...f, epub_price: e.target.value }))}
+                      className="w-full px-4 py-2.5 bg-[#2c2b2b] border border-white/[0.09] rounded-xl text-white text-sm outline-none focus:border-[#f26822]/45"
+                      placeholder="Opcional" />
+                  </div>
+                </div>
+
                 <div>
-                  <label className="text-[10px] uppercase tracking-widest text-white/35 block mb-1.5">Precio (COP) *</label>
-                  <input required type="number" min="0" value={form.price}
-                    onChange={e => setForm(f => ({ ...f, price: e.target.value }))}
-                    className="w-full px-4 py-2.5 bg-[#2c2b2b] border border-white/[0.09] rounded-xl text-white text-sm outline-none focus:border-[#f26822]/45"
-                    placeholder="35000" />
+                  <label className="text-[10px] uppercase tracking-widest text-white/35 block mb-1.5">Link de Amazon (EPUB)</label>
+                  <input type="url" value={form.epub_url}
+                    onChange={e => setForm(f => ({ ...f, epub_url: e.target.value }))}
+                    className="w-full px-4 py-2.5 bg-[#2c2b2b] border border-white/[0.09] rounded-xl text-white/60 text-sm outline-none focus:border-[#f26822]/45"
+                    placeholder="https://www.amazon.com/dp/..." />
                 </div>
 
                 <div>
@@ -1190,14 +1229,23 @@ const AdminDashboard: React.FC = () => {
                       : <><Upload size={15} className="text-white/40" /><span className="text-white/40 text-sm">Subir imagen (JPG, PNG, WebP)</span></>
                     }
                     <input type="file" accept="image/*" className="hidden"
-                      onChange={e => { const f = e.target.files?.[0]; if (f) handleImageUpload(f) }} />
+                      onChange={e => { const f = e.target.files?.[0]; if (f) setCropFile(f); e.target.value = '' }} />
                   </label>
                   <div className="flex items-center gap-2 mt-2">
                     <ImageIcon size={12} className="text-white/20 flex-shrink-0" />
                     <input value={form.image_url} onChange={e => { setForm(f => ({ ...f, image_url: e.target.value })); setImagePreview(e.target.value || null) }}
                       className="flex-1 px-3 py-1.5 bg-transparent border-b border-white/[0.07] text-white/40 text-xs outline-none focus:border-[#f26822]/30 placeholder:text-white/20"
                       placeholder="O pega una URL directamente..." />
+                    {form.image_url.trim() && (
+                      <button type="button" onClick={handleCropFromUrl} disabled={urlCropLoading}
+                        className="flex-shrink-0 text-[11px] font-medium text-[#f26822]/80 hover:text-[#f26822] disabled:opacity-40 transition-colors">
+                        {urlCropLoading ? '...' : 'Recortar'}
+                      </button>
+                    )}
                   </div>
+                  {urlCropError && (
+                    <p className="text-red-400/70 text-xs mt-1.5">{urlCropError}</p>
+                  )}
                 </div>
 
                 <div>
@@ -1228,6 +1276,16 @@ const AdminDashboard: React.FC = () => {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* ── Book cover crop ── */}
+      {cropFile && (
+        <ImageCropModal
+          file={cropFile}
+          aspect={3 / 4}
+          onCancel={() => setCropFile(null)}
+          onConfirm={(blob) => { setCropFile(null); handleImageUpload(blob) }}
+        />
+      )}
 
       {/* ── Confirm Dialog ── */}
       <AnimatePresence>

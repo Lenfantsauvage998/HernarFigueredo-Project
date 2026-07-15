@@ -1,13 +1,16 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
-import type { CartItem, Book } from '../types'
+import type { CartItem, Book, BookFormat } from '../types'
+
+export const unitPrice = (book: Book, format: BookFormat) =>
+  format === 'EPUB' ? (book.epub_price ?? book.price) : book.price
 
 interface CartState {
   items: CartItem[]
   isOpen: boolean
-  addItem: (book: Book) => void
-  removeItem: (bookId: string) => void
-  updateQuantity: (bookId: string, quantity: number) => void
+  addItem: (book: Book, format?: BookFormat) => void
+  removeItem: (bookId: string, format: BookFormat) => void
+  updateQuantity: (bookId: string, format: BookFormat, quantity: number) => void
   clearCart: () => void
   openCart: () => void
   closeCart: () => void
@@ -22,32 +25,32 @@ export const useCartStore = create<CartState>()(
       items: [],
       isOpen: false,
 
-      addItem: (book) => {
-        const existing = get().items.find((i) => i.service.id === book.id)
+      addItem: (book, format = 'FISICO') => {
+        const existing = get().items.find((i) => i.service.id === book.id && i.format === format)
         if (existing) {
           set({
             items: get().items.map((i) =>
-              i.service.id === book.id
+              i.service.id === book.id && i.format === format
                 ? { ...i, quantity: i.quantity + 1 }
                 : i
             ),
           })
         } else {
-          set({ items: [...get().items, { service: book, quantity: 1 }] })
+          set({ items: [...get().items, { service: book, quantity: 1, format }] })
         }
       },
 
-      removeItem: (bookId) =>
-        set({ items: get().items.filter((i) => i.service.id !== bookId) }),
+      removeItem: (bookId, format) =>
+        set({ items: get().items.filter((i) => !(i.service.id === bookId && i.format === format)) }),
 
-      updateQuantity: (bookId, quantity) => {
+      updateQuantity: (bookId, format, quantity) => {
         if (quantity <= 0) {
-          get().removeItem(bookId)
+          get().removeItem(bookId, format)
           return
         }
         set({
           items: get().items.map((i) =>
-            i.service.id === bookId ? { ...i, quantity } : i
+            i.service.id === bookId && i.format === format ? { ...i, quantity } : i
           ),
         })
       },
@@ -59,7 +62,7 @@ export const useCartStore = create<CartState>()(
       toggleCart: () => set({ isOpen: !get().isOpen }),
 
       getTotal: () =>
-        get().items.reduce((sum, i) => sum + i.service.price * i.quantity, 0),
+        get().items.reduce((sum, i) => sum + unitPrice(i.service, i.format) * i.quantity, 0),
 
       getItemCount: () =>
         get().items.reduce((sum, i) => sum + i.quantity, 0),

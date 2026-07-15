@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { BookOpen, ArrowLeft, AlertCircle } from 'lucide-react'
-import { useCartStore } from '../store/cartStore'
+import { useCartStore, unitPrice } from '../store/cartStore'
 import { useAuthStore } from '../store/authStore'
 import { createOrderViaEdgeFunction, createOrderDirect, patchOrderPhone } from '../services/orders'
 import { initiatePayment } from '../services/payments'
@@ -105,18 +105,25 @@ const Checkout: React.FC = () => {
     setLoading(true)
     try {
       let orderId: string
-      try {
-        const result = await createOrderViaEdgeFunction(
-          items.map((i) => ({ serviceId: i.service.id, quantity: i.quantity }))
-        )
+      const hasEpub = items.some((i) => i.format === 'EPUB')
+      const directItems = items.map((i) => ({ serviceId: i.service.id, quantity: i.quantity, format: i.format }))
+
+      if (hasEpub) {
+        // The cloud order function doesn't know about EPUB pricing yet — use the
+        // DB-authoritative direct path instead of risking the wrong price.
+        const result = await createOrderDirect(directItems, form.phone)
         orderId = result.orderId
-        if (form.phone) await patchOrderPhone(orderId, form.phone)
-      } catch {
-        const result = await createOrderDirect(
-          items.map((i) => ({ serviceId: i.service.id, quantity: i.quantity })),
-          form.phone
-        )
-        orderId = result.orderId
+      } else {
+        try {
+          const result = await createOrderViaEdgeFunction(
+            items.map((i) => ({ serviceId: i.service.id, quantity: i.quantity }))
+          )
+          orderId = result.orderId
+          if (form.phone) await patchOrderPhone(orderId, form.phone)
+        } catch {
+          const result = await createOrderDirect(directItems, form.phone)
+          orderId = result.orderId
+        }
       }
 
       const { amount } = await initiatePayment({
@@ -254,16 +261,16 @@ const Checkout: React.FC = () => {
 
                 <div className="space-y-4 mb-6">
                   {items.map((item) => (
-                    <div key={item.service.id} className="flex items-start gap-3">
+                    <div key={`${item.service.id}-${item.format}`} className="flex items-start gap-3">
                       <div className="w-10 h-10 bg-[#f26822]/10 rounded-lg flex items-center justify-center flex-shrink-0">
                         <BookOpen size={16} className="text-[#f26822]" />
                       </div>
                       <div className="flex-1 min-w-0">
                         <p className="text-sm font-medium text-white line-clamp-1">{item.service.title}</p>
-                        <p className="text-xs text-white/40">Libro × {item.quantity}</p>
+                        <p className="text-xs text-white/40">{item.format === 'EPUB' ? 'EPUB' : 'Físico'} × {item.quantity}</p>
                       </div>
                       <span className="text-sm font-semibold text-white flex-shrink-0">
-                        ${(item.service.price * item.quantity).toLocaleString('es-CO')}
+                        ${(unitPrice(item.service, item.format) * item.quantity).toLocaleString('es-CO')}
                       </span>
                     </div>
                   ))}

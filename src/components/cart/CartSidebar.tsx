@@ -1,7 +1,7 @@
 import React from 'react'
 import { X, ShoppingCart, Trash2, Plus, Minus, BookOpen } from 'lucide-react'
 import { Link, useNavigate } from 'react-router-dom'
-import { useCartStore } from '../../store/cartStore'
+import { useCartStore, unitPrice } from '../../store/cartStore'
 import { useAuthStore } from '../../store/authStore'
 import Button from '../ui/Button'
 
@@ -77,7 +77,7 @@ const CartSidebar: React.FC = () => {
           ) : (
             <>
               {items.map((item) => (
-                <div key={item.service.id} className="flex gap-4 p-3 bg-white/5 rounded-xl border border-white/10">
+                <div key={`${item.service.id}-${item.format}`} className="flex gap-4 p-3 bg-white/5 rounded-xl border border-white/10">
                   <div className="w-14 h-14 bg-[#f26822]/10 rounded-lg flex-shrink-0 flex items-center justify-center">
                     {item.service.image_url ? (
                       <img
@@ -91,28 +91,28 @@ const CartSidebar: React.FC = () => {
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-semibold text-white line-clamp-1">{item.service.title}</p>
-                    <p className="text-xs text-white/40">Libro</p>
+                    <p className="text-xs text-white/40">{item.format === 'EPUB' ? 'EPUB' : 'Físico'}</p>
                     <p className="text-sm font-bold text-[#f26822] mt-1">
-                      ${(item.service.price * item.quantity).toLocaleString('es-CO')}
+                      ${(unitPrice(item.service, item.format) * item.quantity).toLocaleString('es-CO')}
                     </p>
                   </div>
                   <div className="flex flex-col items-end gap-2">
                     <button
-                      onClick={() => removeItem(item.service.id)}
+                      onClick={() => removeItem(item.service.id, item.format)}
                       className="text-white/30 hover:text-red-400 transition-colors"
                     >
                       <Trash2 size={14} />
                     </button>
                     <div className="flex items-center gap-1">
                       <button
-                        onClick={() => updateQuantity(item.service.id, item.quantity - 1)}
+                        onClick={() => updateQuantity(item.service.id, item.format, item.quantity - 1)}
                         className="w-6 h-6 rounded-md bg-white/10 flex items-center justify-center hover:bg-[#f26822]/20 transition-colors text-white"
                       >
                         <Minus size={12} />
                       </button>
                       <span className="text-sm font-semibold w-6 text-center text-white">{item.quantity}</span>
                       <button
-                        onClick={() => updateQuantity(item.service.id, item.quantity + 1)}
+                        onClick={() => updateQuantity(item.service.id, item.format, item.quantity + 1)}
                         className="w-6 h-6 rounded-md bg-white/10 flex items-center justify-center hover:bg-[#f26822]/20 transition-colors text-white"
                       >
                         <Plus size={12} />

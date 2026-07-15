@@ -37,7 +37,7 @@ export const fetchOrder = async (id: string): Promise<Order> => {
 }
 
 export const createOrderDirect = async (
-  items: { serviceId: string; quantity: number }[],
+  items: { serviceId: string; quantity: number; format?: 'FISICO' | 'EPUB' }[],
   customerPhone?: string
 ): Promise<{ orderId: string; totalAmount: number }> => {
   const { data: { user } } = await supabase.auth.getUser()
@@ -45,13 +45,20 @@ export const createOrderDirect = async (
 
   const { data: services, error: svcErr } = await supabase
     .from('services')
-    .select('id, price')
+    .select('id, price, epub_price')
     .in('id', items.map((i) => i.serviceId))
     .eq('is_active', true)
   if (svcErr) throw svcErr
 
-  const priceMap = Object.fromEntries((services ?? []).map((s: { id: string; price: number }) => [s.id, s.price]))
-  const totalAmount = items.reduce((sum, item) => sum + (priceMap[item.serviceId] ?? 0) * item.quantity, 0)
+  const svcMap = Object.fromEntries(
+    (services ?? []).map((s: { id: string; price: number; epub_price: number | null }) => [s.id, s])
+  )
+  const priceFor = (item: { serviceId: string; format?: 'FISICO' | 'EPUB' }) => {
+    const svc = svcMap[item.serviceId]
+    if (!svc) return 0
+    return item.format === 'EPUB' ? (svc.epub_price ?? svc.price) : svc.price
+  }
+  const totalAmount = items.reduce((sum, item) => sum + priceFor(item) * item.quantity, 0)
 
   const { data: order, error: orderErr } = await supabase
     .from('orders')
@@ -66,7 +73,8 @@ export const createOrderDirect = async (
       order_id: order.id,
       service_id: item.serviceId,
       quantity: item.quantity,
-      price: priceMap[item.serviceId] ?? 0,
+      price: priceFor(item),
+      format: item.format ?? 'FISICO',
     })))
   if (itemsErr) throw itemsErr
 
