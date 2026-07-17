@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react'
-import { BookOpen, ShoppingCart, Check, Star, Smartphone, Package, ExternalLink } from 'lucide-react'
+import { BookOpen, ShoppingCart, Check, Star, Smartphone, Package, ExternalLink, Info } from 'lucide-react'
 import { useCartStore, unitPrice } from '../../store/cartStore'
+import { useCurrencyStore } from '../../store/currencyStore'
+import { formatPrice } from '../../lib/currency'
 import type { Book, BookFormat } from '../../types'
 import Modal from '../ui/Modal'
 import Button from '../ui/Button'
@@ -12,14 +14,22 @@ interface BookDetailModalProps {
 
 const BookDetailModal: React.FC<BookDetailModalProps> = ({ book, onClose }) => {
   const { addItem, items } = useCartStore()
+  const { currency, rates } = useCurrencyStore()
   const [format, setFormat] = useState<BookFormat>('FISICO')
 
-  useEffect(() => { setFormat('FISICO') }, [book?.id])
+  const hasPhysical = !!book && (!!book.marketlibros_url || !!book.amazon_url)
+  const hasVirtual = !!book && book.epub_price != null
+  const showToggle = hasPhysical && hasVirtual
+
+  useEffect(() => {
+    if (!book) return
+    setFormat(hasPhysical ? 'FISICO' : hasVirtual ? 'EPUB' : 'FISICO')
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [book?.id])
 
   if (!book) return null
 
-  const hasEpub = book.epub_price != null
-  const inCart = items.some((i) => i.service.id === book.id && i.format === format)
+  const inCart = items.some((i) => i.service.id === book.id && i.format === 'EPUB')
 
   return (
     <Modal isOpen={!!book} onClose={onClose} size="lg">
@@ -83,60 +93,94 @@ const BookDetailModal: React.FC<BookDetailModalProps> = ({ book, onClose }) => {
             </div>
           )}
 
+          {/* Condensed buying guide */}
+          {showToggle && (
+            <div className="flex gap-2.5 items-start bg-white/[0.03] border border-white/[0.08] rounded-xl px-4 py-3 mb-4">
+              <Info size={14} className="text-[#f26822] flex-shrink-0 mt-0.5" />
+              <p className="text-white/50 text-xs leading-relaxed">
+                <span className="text-white/70 font-medium">EPUB:</span> lectura inmediata en cualquier dispositivo, llega a tu correo en menos de 12h.{' '}
+                <span className="text-white/70 font-medium">Físico:</span> impreso bajo demanda — Marketlibros para Colombia, Ecuador, Argentina, Bolivia, Brasil, México y España; Amazon para EE.UU., Europa y el resto del mundo.
+              </p>
+            </div>
+          )}
+
           {/* Format selector */}
-          {hasEpub && (
+          {showToggle && (
             <div className="flex gap-2 mb-5">
               <button
                 type="button"
                 onClick={() => setFormat('FISICO')}
-                className={`flex-1 flex flex-col items-center justify-center gap-0.5 py-2.5 px-3 rounded-xl text-sm font-medium border transition-all ${
+                className={`flex-1 flex items-center justify-center gap-2 py-2.5 px-3 rounded-xl text-sm font-medium border transition-all ${
                   format === 'FISICO'
                     ? 'bg-[#f26822] border-[#f26822] text-white shadow-lg shadow-[#f26822]/20'
                     : 'border-white/[0.1] text-white/50 hover:text-white hover:border-white/25'
                 }`}
               >
-                <span className="flex items-center gap-2"><Package size={14} /> Físico</span>
-                <span className={`text-xs font-normal ${format === 'FISICO' ? 'text-white/80' : 'text-white/30'}`}>
-                  ${book.price.toLocaleString('es-CO')}
-                </span>
+                <Package size={14} /> Físico
               </button>
               <button
                 type="button"
                 onClick={() => setFormat('EPUB')}
-                className={`flex-1 flex flex-col items-center justify-center gap-0.5 py-2.5 px-3 rounded-xl text-sm font-medium border transition-all ${
+                className={`flex-1 flex items-center justify-center gap-2 py-2.5 px-3 rounded-xl text-sm font-medium border transition-all ${
                   format === 'EPUB'
                     ? 'bg-[#f26822] border-[#f26822] text-white shadow-lg shadow-[#f26822]/20'
                     : 'border-white/[0.1] text-white/50 hover:text-white hover:border-white/25'
                 }`}
               >
-                <span className="flex items-center gap-2"><Smartphone size={14} /> EPUB</span>
-                <span className={`text-xs font-normal ${format === 'EPUB' ? 'text-white/80' : 'text-white/30'}`}>
-                  ${unitPrice(book, 'EPUB').toLocaleString('es-CO')}
-                </span>
+                <Smartphone size={14} /> Virtual (EPUB)
               </button>
             </div>
           )}
 
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-3xl font-bold text-[#f26822]">
-                ${unitPrice(book, format).toLocaleString('es-CO')}
-              </p>
-              <p className="text-xs text-white/30">COP{hasEpub ? ` · ${format === 'EPUB' ? 'EPUB' : 'Físico'}` : ''}</p>
+          {/* ── Físico: external vendor links, no price shown ── */}
+          {format === 'FISICO' && hasPhysical && (
+            <div className="space-y-2.5">
+              <p className="text-xs text-white/30 mb-1">Disponible impreso a través de:</p>
+              {book.marketlibros_url && (
+                <div>
+                  <a
+                    href={book.marketlibros_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center justify-between gap-3 px-5 py-3.5 rounded-xl border border-white/[0.1] hover:border-[#f26822]/50 bg-white/[0.03] hover:bg-[#f26822]/10 transition-all group"
+                  >
+                    <span className="text-white font-semibold text-sm">Comprar en Marketlibros</span>
+                    <ExternalLink size={15} className="text-white/40 group-hover:text-[#f26822] transition-colors" />
+                  </a>
+                  <p className="text-white/25 text-[11px] mt-1.5 px-1">
+                    Marketlibros imprime el libro en tu país — te ahorras el envío internacional.
+                  </p>
+                </div>
+              )}
+              {book.amazon_url && (
+                <a
+                  href={book.amazon_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-between gap-3 px-5 py-3.5 rounded-xl border border-white/[0.1] hover:border-[#f26822]/50 bg-white/[0.03] hover:bg-[#f26822]/10 transition-all group"
+                >
+                  <span className="text-white font-semibold text-sm">Comprar en Amazon</span>
+                  <ExternalLink size={15} className="text-white/40 group-hover:text-[#f26822] transition-colors" />
+                </a>
+              )}
             </div>
-            {format === 'EPUB' ? (
+          )}
+
+          {format === 'FISICO' && !hasPhysical && (
+            <p className="text-white/30 text-sm">Versión física próximamente disponible.</p>
+          )}
+
+          {/* ── Virtual/EPUB: normal cart + checkout flow, price shown ── */}
+          {format === 'EPUB' && hasVirtual && (
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-3xl font-bold text-[#f26822]">
+                  {formatPrice(unitPrice(book, 'EPUB'), currency, rates)}
+                </p>
+                <p className="text-xs text-white/30">Virtual · EPUB</p>
+              </div>
               <Button
-                onClick={() => { window.open(book.epub_url!, '_blank', 'noopener,noreferrer') }}
-                disabled={!book.epub_url}
-                variant="primary"
-                size="lg"
-              >
-                <ExternalLink size={16} />
-                {book.epub_url ? 'Comprar en Amazon' : 'Próximamente'}
-              </Button>
-            ) : (
-              <Button
-                onClick={() => { addItem(book, format); onClose() }}
+                onClick={() => { addItem(book, 'EPUB'); onClose() }}
                 variant={inCart ? 'outline' : 'primary'}
                 size="lg"
               >
@@ -152,8 +196,12 @@ const BookDetailModal: React.FC<BookDetailModalProps> = ({ book, onClose }) => {
                   </>
                 )}
               </Button>
-            )}
-          </div>
+            </div>
+          )}
+
+          {format === 'EPUB' && !hasVirtual && (
+            <p className="text-white/30 text-sm">Versión virtual próximamente disponible.</p>
+          )}
         </div>
       </div>
     </Modal>

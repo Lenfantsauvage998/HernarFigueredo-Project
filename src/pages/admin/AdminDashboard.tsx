@@ -43,7 +43,7 @@ type Tab = 'books' | 'orders' | 'users' | 'newsletter' | 'articles' | 'settings'
 
 // ─── Book Form ────────────────────────────────────────────────
 const emptyForm = {
-  title: '', description: '', price: '', epub_price: '', epub_url: '', features: ['', '', ''], image_url: ''
+  title: '', description: '', price: '', epub_price: '', amazon_url: '', marketlibros_url: '', features: ['', '', ''], image_url: ''
 }
 
 const BUCKET = 'service-images'
@@ -290,7 +290,7 @@ const AdminDashboard: React.FC = () => {
     setEditing(book)
     setForm({ title: book.title, description: book.description, price: String(book.price),
       epub_price: book.epub_price != null ? String(book.epub_price) : '',
-      epub_url: book.epub_url ?? '',
+      amazon_url: book.amazon_url ?? '', marketlibros_url: book.marketlibros_url ?? '',
       features: [...book.features, '', '', ''].slice(0, 3), image_url: book.image_url ?? '' })
     setImagePreview(book.image_url ?? null)
     setShowForm(true)
@@ -325,7 +325,7 @@ const AdminDashboard: React.FC = () => {
     e.preventDefault(); setSaving(true)
     const payload = { title: form.title.trim(), description: form.description.trim(),
       price: Number(form.price), epub_price: form.epub_price.trim() ? Number(form.epub_price) : null,
-      epub_url: form.epub_url.trim() || null,
+      amazon_url: form.amazon_url.trim() || null, marketlibros_url: form.marketlibros_url.trim() || null,
       features: form.features.filter(f => f.trim()),
       image_url: form.image_url.trim() || null, category: 'LIBRO', is_active: true }
     if (editing) await supabase.from('services').update(payload).eq('id', editing.id)
@@ -1193,6 +1193,7 @@ const AdminDashboard: React.FC = () => {
                       onChange={e => setForm(f => ({ ...f, price: e.target.value }))}
                       className="w-full px-4 py-2.5 bg-[#2c2b2b] border border-white/[0.09] rounded-xl text-white text-sm outline-none focus:border-[#f26822]/45"
                       placeholder="35000" />
+                    <p className="text-white/20 text-[10px] mt-1">Uso interno — ya no se muestra públicamente (físico ahora redirige a Marketlibros/Amazon)</p>
                   </div>
                   <div>
                     <label className="text-[10px] uppercase tracking-widest text-white/35 block mb-1.5">Precio EPUB (COP)</label>
@@ -1200,15 +1201,25 @@ const AdminDashboard: React.FC = () => {
                       onChange={e => setForm(f => ({ ...f, epub_price: e.target.value }))}
                       className="w-full px-4 py-2.5 bg-[#2c2b2b] border border-white/[0.09] rounded-xl text-white text-sm outline-none focus:border-[#f26822]/45"
                       placeholder="Opcional" />
+                    <p className="text-white/20 text-[10px] mt-1">Este es el precio real que se cobra en el checkout</p>
                   </div>
                 </div>
 
-                <div>
-                  <label className="text-[10px] uppercase tracking-widest text-white/35 block mb-1.5">Link de Amazon (EPUB)</label>
-                  <input type="url" value={form.epub_url}
-                    onChange={e => setForm(f => ({ ...f, epub_url: e.target.value }))}
-                    className="w-full px-4 py-2.5 bg-[#2c2b2b] border border-white/[0.09] rounded-xl text-white/60 text-sm outline-none focus:border-[#f26822]/45"
-                    placeholder="https://www.amazon.com/dp/..." />
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="text-[10px] uppercase tracking-widest text-white/35 block mb-1.5">Link Marketlibros (Físico)</label>
+                    <input type="url" value={form.marketlibros_url}
+                      onChange={e => setForm(f => ({ ...f, marketlibros_url: e.target.value }))}
+                      className="w-full px-4 py-2.5 bg-[#2c2b2b] border border-white/[0.09] rounded-xl text-white/60 text-sm outline-none focus:border-[#f26822]/45"
+                      placeholder="https://marketlibros.com/..." />
+                  </div>
+                  <div>
+                    <label className="text-[10px] uppercase tracking-widest text-white/35 block mb-1.5">Link Amazon (Físico)</label>
+                    <input type="url" value={form.amazon_url}
+                      onChange={e => setForm(f => ({ ...f, amazon_url: e.target.value }))}
+                      className="w-full px-4 py-2.5 bg-[#2c2b2b] border border-white/[0.09] rounded-xl text-white/60 text-sm outline-none focus:border-[#f26822]/45"
+                      placeholder="https://www.amazon.com/dp/..." />
+                  </div>
                 </div>
 
                 <div>

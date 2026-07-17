@@ -1,7 +1,6 @@
 import React from 'react'
-import { BookOpen, ShoppingCart, Check } from 'lucide-react'
+import { ArrowRight, BookOpen } from 'lucide-react'
 import { motion } from 'motion/react'
-import { useCartStore } from '../../store/cartStore'
 import type { Book } from '../../types'
 
 interface BookCardProps {
@@ -10,14 +9,6 @@ interface BookCardProps {
 }
 
 const BookCard: React.FC<BookCardProps> = ({ book, onClick }) => {
-  const { addItem, items } = useCartStore()
-  const inCart = items.some((i) => i.service.id === book.id)
-
-  const handleAddToCart = (e: React.MouseEvent) => {
-    e.stopPropagation()
-    addItem(book)
-  }
-
   return (
     <motion.div
       whileHover={{ y: -6 }}
@@ -85,33 +76,13 @@ const BookCard: React.FC<BookCardProps> = ({ book, onClick }) => {
           {book.description}
         </p>
 
-        <div className="flex items-end justify-between">
-          <div>
-            <p className="text-[#f26822] font-bold text-xl tracking-tight leading-none">
-              ${book.price.toLocaleString('es-CO')}
-            </p>
-            <p className="text-white/22 text-[10px] uppercase tracking-wider mt-0.5">COP</p>
-          </div>
-
+        <div className="flex items-center justify-end">
           <button
-            onClick={handleAddToCart}
-            className={`flex items-center gap-2 text-sm px-4 py-2.5 rounded-xl font-medium transition-all duration-200 ${
-              inCart
-                ? 'bg-emerald-500/12 text-emerald-400 border border-emerald-500/20'
-                : 'bg-[#f26822] hover:bg-[#d45c1a] text-white shadow-lg shadow-[#f26822]/20 hover:shadow-[#f26822]/35 active:scale-95'
-            }`}
+            onClick={onClick}
+            className="flex items-center gap-2 text-sm px-4 py-2.5 rounded-xl font-medium transition-all duration-200 bg-[#f26822] hover:bg-[#d45c1a] text-white shadow-lg shadow-[#f26822]/20 hover:shadow-[#f26822]/35 active:scale-95"
           >
-            {inCart ? (
-              <>
-                <Check size={14} />
-                En carrito
-              </>
-            ) : (
-              <>
-                <ShoppingCart size={14} />
-                Comprar
-              </>
-            )}
+            Ver opciones
+            <ArrowRight size={14} />
           </button>
         </div>
       </div>

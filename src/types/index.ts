@@ -28,7 +28,8 @@ export interface Book {
   category: 'LIBRO'
   price: number
   epub_price: number | null
-  epub_url: string | null
+  amazon_url: string | null
+  marketlibros_url: string | null
   image_url: string | null
   image_urls: string[]
   features: string[]

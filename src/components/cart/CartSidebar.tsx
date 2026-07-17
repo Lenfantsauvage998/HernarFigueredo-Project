@@ -3,11 +3,14 @@ import { X, ShoppingCart, Trash2, Plus, Minus, BookOpen } from 'lucide-react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useCartStore, unitPrice } from '../../store/cartStore'
 import { useAuthStore } from '../../store/authStore'
+import { useCurrencyStore } from '../../store/currencyStore'
+import { formatPrice } from '../../lib/currency'
 import Button from '../ui/Button'
 
 const CartSidebar: React.FC = () => {
   const { items, isOpen, closeCart, removeItem, updateQuantity, getTotal, clearCart } = useCartStore()
   const { isAuthenticated } = useAuthStore()
+  const { currency, rates } = useCurrencyStore()
   const navigate = useNavigate()
   const total = getTotal()
 
@@ -93,7 +96,7 @@ const CartSidebar: React.FC = () => {
                     <p className="text-sm font-semibold text-white line-clamp-1">{item.service.title}</p>
                     <p className="text-xs text-white/40">{item.format === 'EPUB' ? 'EPUB' : 'Físico'}</p>
                     <p className="text-sm font-bold text-[#f26822] mt-1">
-                      ${(unitPrice(item.service, item.format) * item.quantity).toLocaleString('es-CO')}
+                      {formatPrice(unitPrice(item.service, item.format) * item.quantity, currency, rates)}
                     </p>
                   </div>
                   <div className="flex flex-col items-end gap-2">
@@ -138,10 +141,14 @@ const CartSidebar: React.FC = () => {
             <div className="flex items-center justify-between">
               <span className="text-sm text-white/60">Subtotal</span>
               <span className="font-bold text-white">
-                {total.toLocaleString('es-CO', { style: 'currency', currency: 'COP' })}
+                {formatPrice(total, currency, rates)}
               </span>
             </div>
-            <p className="text-xs text-white/30">El total final se muestra al finalizar la compra</p>
+            <p className="text-xs text-white/30">
+              {currency === 'COP'
+                ? 'El total final se muestra al finalizar la compra'
+                : `Precio de referencia — el cobro se procesa en COP (${total.toLocaleString('es-CO')} COP)`}
+            </p>
             <Button
               onClick={handleCheckout}
               variant="primary"

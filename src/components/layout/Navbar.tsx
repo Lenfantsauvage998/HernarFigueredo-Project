@@ -5,6 +5,7 @@ import { useAuthStore } from '../../store/authStore'
 import { useCartStore } from '../../store/cartStore'
 import { logoutUser } from '../../services/auth'
 import CartSidebar from '../cart/CartSidebar'
+import CurrencySelector from './CurrencySelector'
 
 const Navbar: React.FC = () => {
   const [scrolled, setScrolled] = useState(false)
@@ -88,6 +89,9 @@ const Navbar: React.FC = () => {
 
             {/* Right actions */}
             <div className="flex items-center gap-3">
+              {/* Currency */}
+              <CurrencySelector />
+
               {/* Cart */}
               <button
                 onClick={toggleCart}
