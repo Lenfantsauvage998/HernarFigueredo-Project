@@ -171,31 +171,40 @@ const BookDetailModal: React.FC<BookDetailModalProps> = ({ book, onClose }) => {
 
           {/* ── Virtual/EPUB: normal cart + checkout flow, price shown ── */}
           {format === 'EPUB' && hasVirtual && (
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-3xl font-bold text-[#f26822]">
-                  {formatPrice(unitPrice(book, 'EPUB'), currency, rates)}
+            <>
+              <div className="flex gap-2.5 items-start bg-white/[0.03] border border-white/[0.08] rounded-xl px-4 py-3 mb-4">
+                <Info size={14} className="text-[#f26822] flex-shrink-0 mt-0.5" />
+                <p className="text-white/50 text-xs leading-relaxed">
+                  Lectura inmediata en cualquier dispositivo. Recibirás el libro en tu correo dentro de las próximas <span className="text-white/70 font-medium">12 horas</span> tras confirmar la compra.
                 </p>
-                <p className="text-xs text-white/30">Virtual · EPUB</p>
               </div>
-              <Button
-                onClick={() => { addItem(book, 'EPUB'); onClose() }}
-                variant={inCart ? 'outline' : 'primary'}
-                size="lg"
-              >
-                {inCart ? (
-                  <>
-                    <Check size={16} />
-                    Ya en carrito
-                  </>
-                ) : (
-                  <>
-                    <ShoppingCart size={16} />
-                    Agregar al carrito
-                  </>
-                )}
-              </Button>
-            </div>
+
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-3xl font-bold text-[#f26822]">
+                    {formatPrice(unitPrice(book, 'EPUB'), currency, rates)}
+                  </p>
+                  <p className="text-xs text-white/30">Virtual · EPUB</p>
+                </div>
+                <Button
+                  onClick={() => { addItem(book, 'EPUB'); onClose() }}
+                  variant={inCart ? 'outline' : 'primary'}
+                  size="lg"
+                >
+                  {inCart ? (
+                    <>
+                      <Check size={16} />
+                      Ya en carrito
+                    </>
+                  ) : (
+                    <>
+                      <ShoppingCart size={16} />
+                      Agregar al carrito
+                    </>
+                  )}
+                </Button>
+              </div>
+            </>
           )}
 
           {format === 'EPUB' && !hasVirtual && (
