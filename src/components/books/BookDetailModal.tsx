@@ -23,7 +23,7 @@ const BookDetailModal: React.FC<BookDetailModalProps> = ({ book, onClose }) => {
 
   useEffect(() => {
     if (!book) return
-    setFormat(hasPhysical ? 'FISICO' : hasVirtual ? 'EPUB' : 'FISICO')
+    setFormat(hasVirtual ? 'EPUB' : hasPhysical ? 'FISICO' : 'FISICO')
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [book?.id])
 
@@ -93,31 +93,9 @@ const BookDetailModal: React.FC<BookDetailModalProps> = ({ book, onClose }) => {
             </div>
           )}
 
-          {/* Condensed buying guide */}
-          {showToggle && (
-            <div className="flex gap-2.5 items-start bg-white/[0.03] border border-white/[0.08] rounded-xl px-4 py-3 mb-4">
-              <Info size={14} className="text-[#f26822] flex-shrink-0 mt-0.5" />
-              <p className="text-white/50 text-xs leading-relaxed">
-                <span className="text-white/70 font-medium">EPUB:</span> lectura inmediata en cualquier dispositivo, llega a tu correo en menos de 12h.{' '}
-                <span className="text-white/70 font-medium">Físico:</span> impreso bajo demanda — Marketlibros para Colombia, Ecuador, Argentina, Bolivia, Brasil, México y España; Amazon para EE.UU., Europa y el resto del mundo.
-              </p>
-            </div>
-          )}
-
           {/* Format selector */}
           {showToggle && (
             <div className="flex gap-2 mb-5">
-              <button
-                type="button"
-                onClick={() => setFormat('FISICO')}
-                className={`flex-1 flex items-center justify-center gap-2 py-2.5 px-3 rounded-xl text-sm font-medium border transition-all ${
-                  format === 'FISICO'
-                    ? 'bg-[#f26822] border-[#f26822] text-white shadow-lg shadow-[#f26822]/20'
-                    : 'border-white/[0.1] text-white/50 hover:text-white hover:border-white/25'
-                }`}
-              >
-                <Package size={14} /> Físico
-              </button>
               <button
                 type="button"
                 onClick={() => setFormat('EPUB')}
@@ -129,6 +107,27 @@ const BookDetailModal: React.FC<BookDetailModalProps> = ({ book, onClose }) => {
               >
                 <Smartphone size={14} /> Virtual (EPUB)
               </button>
+              <button
+                type="button"
+                onClick={() => setFormat('FISICO')}
+                className={`flex-1 flex items-center justify-center gap-2 py-2.5 px-3 rounded-xl text-sm font-medium border transition-all ${
+                  format === 'FISICO'
+                    ? 'bg-[#f26822] border-[#f26822] text-white shadow-lg shadow-[#f26822]/20'
+                    : 'border-white/[0.1] text-white/50 hover:text-white hover:border-white/25'
+                }`}
+              >
+                <Package size={14} /> Físico
+              </button>
+            </div>
+          )}
+
+          {/* Condensed buying guide — only relevant when choosing Físico */}
+          {format === 'FISICO' && hasPhysical && (
+            <div className="flex gap-2.5 items-start bg-white/[0.03] border border-white/[0.08] rounded-xl px-4 py-3 mb-4">
+              <Info size={14} className="text-[#f26822] flex-shrink-0 mt-0.5" />
+              <p className="text-white/50 text-xs leading-relaxed">
+                Impreso bajo demanda. <span className="text-white/70 font-medium">Marketlibros</span> para Colombia, Ecuador, Argentina, Bolivia, Brasil, México y España; <span className="text-white/70 font-medium">Amazon</span> para EE.UU., Europa y el resto del mundo.
+              </p>
             </div>
           )}
 
