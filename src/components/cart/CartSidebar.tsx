@@ -97,7 +97,7 @@ const CartSidebar: React.FC = () => {
                     <p className="text-xs text-white/40">{item.format === 'EPUB' ? 'EPUB' : 'Físico'}</p>
                     <PriceDisplay
                       amountCOP={unitPrice(item.service, item.format) * item.quantity}
-                      className="text-sm font-bold text-[#f26822] hover:text-[#ff7c33] transition-colors mt-1 cursor-pointer"
+                      className="text-xs font-bold text-[#f26822] hover:text-[#ff7c33] mt-1.5 cursor-pointer"
                     />
                   </div>
                   <div className="flex flex-col items-end gap-2">
@@ -141,7 +141,7 @@ const CartSidebar: React.FC = () => {
           <div className="px-5 py-4 border-t border-white/10 space-y-3">
             <div className="flex items-center justify-between">
               <span className="text-sm text-white/60">Subtotal</span>
-              <PriceDisplay amountCOP={total} className="font-bold text-white hover:text-[#f26822] transition-colors cursor-pointer" />
+              <PriceDisplay amountCOP={total} className="text-sm font-bold text-white hover:text-[#f26822] cursor-pointer" />
             </div>
             <p className="text-xs text-white/30">
               {currency === 'COP'

@@ -181,9 +181,9 @@ const BookDetailModal: React.FC<BookDetailModalProps> = ({ book, onClose }) => {
                 <div>
                   <PriceDisplay
                     amountCOP={unitPrice(book, 'EPUB')}
-                    className="text-3xl font-bold text-[#f26822] hover:text-[#ff7c33] transition-colors cursor-pointer"
+                    className="text-2xl font-bold text-[#f26822] hover:text-[#ff7c33] cursor-pointer"
                   />
-                  <p className="text-xs text-white/30">Virtual · EPUB</p>
+                  <p className="text-xs text-white/30 mt-1">Virtual · EPUB</p>
                 </div>
                 <Button
                   onClick={() => { addItem(book, 'EPUB'); onClose() }}
