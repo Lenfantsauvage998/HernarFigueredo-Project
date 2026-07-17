@@ -4,13 +4,13 @@ import { Link, useNavigate } from 'react-router-dom'
 import { useCartStore, unitPrice } from '../../store/cartStore'
 import { useAuthStore } from '../../store/authStore'
 import { useCurrencyStore } from '../../store/currencyStore'
-import { formatPrice } from '../../lib/currency'
 import Button from '../ui/Button'
+import PriceDisplay from '../ui/PriceDisplay'
 
 const CartSidebar: React.FC = () => {
   const { items, isOpen, closeCart, removeItem, updateQuantity, getTotal, clearCart } = useCartStore()
   const { isAuthenticated } = useAuthStore()
-  const { currency, rates } = useCurrencyStore()
+  const { currency } = useCurrencyStore()
   const navigate = useNavigate()
   const total = getTotal()
 
@@ -95,9 +95,10 @@ const CartSidebar: React.FC = () => {
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-semibold text-white line-clamp-1">{item.service.title}</p>
                     <p className="text-xs text-white/40">{item.format === 'EPUB' ? 'EPUB' : 'Físico'}</p>
-                    <p className="text-sm font-bold text-[#f26822] mt-1">
-                      {formatPrice(unitPrice(item.service, item.format) * item.quantity, currency, rates)}
-                    </p>
+                    <PriceDisplay
+                      amountCOP={unitPrice(item.service, item.format) * item.quantity}
+                      className="text-sm font-bold text-[#f26822] hover:text-[#ff7c33] transition-colors mt-1 cursor-pointer"
+                    />
                   </div>
                   <div className="flex flex-col items-end gap-2">
                     <button
@@ -140,9 +141,7 @@ const CartSidebar: React.FC = () => {
           <div className="px-5 py-4 border-t border-white/10 space-y-3">
             <div className="flex items-center justify-between">
               <span className="text-sm text-white/60">Subtotal</span>
-              <span className="font-bold text-white">
-                {formatPrice(total, currency, rates)}
-              </span>
+              <PriceDisplay amountCOP={total} className="font-bold text-white hover:text-[#f26822] transition-colors cursor-pointer" />
             </div>
             <p className="text-xs text-white/30">
               {currency === 'COP'

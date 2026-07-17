@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from 'react'
 import { BookOpen, ShoppingCart, Check, Star, Smartphone, Package, ExternalLink, Info } from 'lucide-react'
 import { useCartStore, unitPrice } from '../../store/cartStore'
-import { useCurrencyStore } from '../../store/currencyStore'
-import { formatPrice } from '../../lib/currency'
 import type { Book, BookFormat } from '../../types'
 import Modal from '../ui/Modal'
 import Button from '../ui/Button'
+import PriceDisplay from '../ui/PriceDisplay'
 
 interface BookDetailModalProps {
   book: Book | null
@@ -14,7 +13,6 @@ interface BookDetailModalProps {
 
 const BookDetailModal: React.FC<BookDetailModalProps> = ({ book, onClose }) => {
   const { addItem, items } = useCartStore()
-  const { currency, rates } = useCurrencyStore()
   const [format, setFormat] = useState<BookFormat>('FISICO')
 
   const hasPhysical = !!book && (!!book.marketlibros_url || !!book.amazon_url)
@@ -181,9 +179,10 @@ const BookDetailModal: React.FC<BookDetailModalProps> = ({ book, onClose }) => {
 
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-3xl font-bold text-[#f26822]">
-                    {formatPrice(unitPrice(book, 'EPUB'), currency, rates)}
-                  </p>
+                  <PriceDisplay
+                    amountCOP={unitPrice(book, 'EPUB')}
+                    className="text-3xl font-bold text-[#f26822] hover:text-[#ff7c33] transition-colors cursor-pointer"
+                  />
                   <p className="text-xs text-white/30">Virtual · EPUB</p>
                 </div>
                 <Button
