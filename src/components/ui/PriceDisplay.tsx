@@ -35,7 +35,15 @@ const PriceDisplay: React.FC<PriceDisplayProps> = ({ amountCOP, className = '' }
         style={{ color: currency === 'COP' ? undefined : DARK_YELLOW }}
         title="Ver en otra moneda"
       >
-        {formatPrice(amountCOP, currency, rates)}
+        <span
+          style={{
+            display: 'inline-block',
+            transform: currency === 'COP' ? 'scale(0.85)' : undefined,
+            transformOrigin: 'left center',
+          }}
+        >
+          {formatPrice(amountCOP, currency, rates)}
+        </span>
       </button>
       {open && (
         <div className="absolute left-0 top-full mt-2 bg-[#1f1d1d] border border-white/10 rounded-xl shadow-2xl z-50 py-1 min-w-[140px] divide-y divide-white/[0.06] overflow-hidden">
@@ -47,7 +55,15 @@ const PriceDisplay: React.FC<PriceDisplayProps> = ({ amountCOP, className = '' }
               className="w-full text-left px-4 py-2.5 text-xs font-medium hover:bg-white/[0.06] transition-colors"
               style={{ color: c === 'COP' ? 'rgba(255,255,255,0.7)' : DARK_YELLOW }}
             >
-              {formatPrice(amountCOP, c, rates)}
+              <span
+                style={{
+                  display: 'inline-block',
+                  transform: c === 'COP' ? 'scale(0.85)' : undefined,
+                  transformOrigin: 'left center',
+                }}
+              >
+                {formatPrice(amountCOP, c, rates)}
+              </span>
             </button>
           ))}
         </div>
