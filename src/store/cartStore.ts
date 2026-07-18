@@ -3,7 +3,7 @@ import { persist } from 'zustand/middleware'
 import type { CartItem, Book, BookFormat } from '../types'
 
 export const unitPrice = (book: Book, format: BookFormat) =>
-  format === 'EPUB' ? (book.epub_price ?? book.price) : book.price
+  format === 'EPUB' ? (book.epub_price ?? book.price ?? 0) : (book.price ?? 0)
 
 interface CartState {
   items: CartItem[]

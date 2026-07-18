@@ -25,12 +25,16 @@ const BookCard: React.FC<BookCardProps> = ({ book, onClick }) => {
               src={book.image_url}
               alt=""
               aria-hidden="true"
-              className="absolute inset-0 w-full h-full object-cover scale-125 blur-2xl opacity-50"
+              className="absolute inset-0 w-full h-full object-cover scale-125 blur-2xl opacity-90"
             />
             <img
               src={book.image_url}
               alt={book.title}
               className="relative w-full h-full object-contain transition-transform duration-700 ease-out group-hover:scale-110"
+              style={{
+                maskImage: 'radial-gradient(ellipse 75% 75% at center, black 65%, transparent 100%)',
+                WebkitMaskImage: 'radial-gradient(ellipse 75% 75% at center, black 65%, transparent 100%)',
+              }}
             />
           </>
         ) : (

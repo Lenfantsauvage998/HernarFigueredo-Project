@@ -344,9 +344,7 @@ const ArticleDetail: React.FC = () => {
                     <p className="text-white/80 text-xs font-semibold line-clamp-2 leading-snug group-hover:text-white transition-colors">
                       {book.title}
                     </p>
-                    <p className="text-[#f26822] text-[11px] font-bold mt-1">
-                      ${book.price.toLocaleString('es-CO')} COP
-                    </p>
+                    <p className="text-white/30 text-[11px] mt-1">Ver opciones</p>
                   </div>
                   <ArrowRight size={13} className="text-white/20 group-hover:text-[#f26822] flex-shrink-0 transition-colors" />
                 </Link>

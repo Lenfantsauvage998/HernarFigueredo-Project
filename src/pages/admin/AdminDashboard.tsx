@@ -43,10 +43,28 @@ type Tab = 'books' | 'orders' | 'users' | 'newsletter' | 'articles' | 'settings'
 
 // ─── Book Form ────────────────────────────────────────────────
 const emptyForm = {
-  title: '', description: '', price: '', epub_price: '', amazon_url: '', marketlibros_url: '', features: ['', '', ''], image_url: ''
+  title: '', description: '', epub_price: '', amazon_url: '', marketlibros_url: '', features: ['', '', ''], image_url: ''
 }
 
 const BUCKET = 'service-images'
+
+// Book covers must be vertical (3:4) — matches the crop tool's output exactly,
+// so anything cropped through it always passes. Raw pasted URLs get rejected
+// unless they already match, to keep every cover looking consistent.
+const COVER_ASPECT = 3 / 4
+const COVER_ASPECT_TOLERANCE = 0.03
+
+const checkImageAspect = (url: string): Promise<boolean> =>
+  new Promise((resolve) => {
+    const img = new Image()
+    img.onload = () => {
+      if (!img.naturalWidth || !img.naturalHeight) { resolve(true); return }
+      const ratio = img.naturalWidth / img.naturalHeight
+      resolve(Math.abs(ratio - COVER_ASPECT) <= COVER_ASPECT_TOLERANCE)
+    }
+    img.onerror = () => resolve(true) // can't verify (network/CORS) — don't block on that
+    img.src = url
+  })
 
 const STATUS_COLORS: Record<string, string> = {
   PENDING:    'text-yellow-400 bg-yellow-400/10 border-yellow-400/20',
@@ -96,6 +114,7 @@ const AdminDashboard: React.FC = () => {
   const [cropFile, setCropFile] = useState<File | null>(null)
   const [urlCropLoading, setUrlCropLoading] = useState(false)
   const [urlCropError, setUrlCropError] = useState('')
+  const [imageFormatError, setImageFormatError] = useState('')
 
   // Orders
   const [expandedOrder, setExpandedOrder] = useState<string | null>(null)
@@ -288,7 +307,7 @@ const AdminDashboard: React.FC = () => {
   }
   const openEdit = (book: Book) => {
     setEditing(book)
-    setForm({ title: book.title, description: book.description, price: String(book.price),
+    setForm({ title: book.title, description: book.description,
       epub_price: book.epub_price != null ? String(book.epub_price) : '',
       amazon_url: book.amazon_url ?? '', marketlibros_url: book.marketlibros_url ?? '',
       features: [...book.features, '', '', ''].slice(0, 3), image_url: book.image_url ?? '' })
@@ -305,6 +324,7 @@ const AdminDashboard: React.FC = () => {
     const { data } = supabase.storage.from(BUCKET).getPublicUrl(path)
     setForm(f => ({ ...f, image_url: data.publicUrl }))
     setImagePreview(data.publicUrl)
+    setImageFormatError('')
     setUploading(false)
   }
   const handleCropFromUrl = async () => {
@@ -322,9 +342,21 @@ const AdminDashboard: React.FC = () => {
     setUrlCropLoading(false)
   }
   const saveBook = async (e: React.FormEvent) => {
-    e.preventDefault(); setSaving(true)
+    e.preventDefault()
+    setImageFormatError('')
+
+    const url = form.image_url.trim()
+    if (url) {
+      const ok = await checkImageAspect(url)
+      if (!ok) {
+        setImageFormatError('La portada no tiene proporción vertical (3:4). Usá "Subir imagen" o "Recortar" para ajustarla antes de guardar.')
+        return
+      }
+    }
+
+    setSaving(true)
     const payload = { title: form.title.trim(), description: form.description.trim(),
-      price: Number(form.price), epub_price: form.epub_price.trim() ? Number(form.epub_price) : null,
+      epub_price: form.epub_price.trim() ? Number(form.epub_price) : null,
       amazon_url: form.amazon_url.trim() || null, marketlibros_url: form.marketlibros_url.trim() || null,
       features: form.features.filter(f => f.trim()),
       image_url: form.image_url.trim() || null, category: 'LIBRO', is_active: true }
@@ -534,7 +566,11 @@ const AdminDashboard: React.FC = () => {
                       <div className="flex-1 min-w-0">
                         <p className="text-white font-semibold text-sm truncate">{book.title}</p>
                         <p className="text-white/40 text-xs mt-0.5 line-clamp-1">{book.description}</p>
-                        <p className="text-[#f26822] text-xs font-bold mt-1">${book.price.toLocaleString('es-CO')} COP</p>
+                        {book.epub_price != null ? (
+                          <p className="text-[#f26822] text-xs font-bold mt-1">${book.epub_price.toLocaleString('es-CO')} COP · EPUB</p>
+                        ) : (
+                          <p className="text-white/25 text-xs mt-1">Sin precio EPUB</p>
+                        )}
                       </div>
                       <div className="flex items-center gap-2">
                         <button onClick={() => openEdit(book)}
@@ -1186,23 +1222,13 @@ const AdminDashboard: React.FC = () => {
                     placeholder="Descripción del libro..." />
                 </div>
 
-                <div className="grid grid-cols-2 gap-3">
-                  <div>
-                    <label className="text-[10px] uppercase tracking-widest text-white/35 block mb-1.5">Precio físico (COP) *</label>
-                    <input required type="number" min="0" value={form.price}
-                      onChange={e => setForm(f => ({ ...f, price: e.target.value }))}
-                      className="w-full px-4 py-2.5 bg-[#2c2b2b] border border-white/[0.09] rounded-xl text-white text-sm outline-none focus:border-[#f26822]/45"
-                      placeholder="35000" />
-                    <p className="text-white/20 text-[10px] mt-1">Uso interno — ya no se muestra públicamente (físico ahora redirige a Marketlibros/Amazon)</p>
-                  </div>
-                  <div>
-                    <label className="text-[10px] uppercase tracking-widest text-white/35 block mb-1.5">Precio EPUB (COP)</label>
-                    <input type="number" min="0" value={form.epub_price}
-                      onChange={e => setForm(f => ({ ...f, epub_price: e.target.value }))}
-                      className="w-full px-4 py-2.5 bg-[#2c2b2b] border border-white/[0.09] rounded-xl text-white text-sm outline-none focus:border-[#f26822]/45"
-                      placeholder="Opcional" />
-                    <p className="text-white/20 text-[10px] mt-1">Este es el precio real que se cobra en el checkout</p>
-                  </div>
+                <div>
+                  <label className="text-[10px] uppercase tracking-widest text-white/35 block mb-1.5">Precio EPUB (COP)</label>
+                  <input type="number" min="0" value={form.epub_price}
+                    onChange={e => setForm(f => ({ ...f, epub_price: e.target.value }))}
+                    className="w-full px-4 py-2.5 bg-[#2c2b2b] border border-white/[0.09] rounded-xl text-white text-sm outline-none focus:border-[#f26822]/45"
+                    placeholder="Opcional — solo si vendes la edición digital" />
+                  <p className="text-white/20 text-[10px] mt-1">Este es el precio que se cobra en el checkout</p>
                 </div>
 
                 <div className="grid grid-cols-2 gap-3">
@@ -1256,6 +1282,9 @@ const AdminDashboard: React.FC = () => {
                   </div>
                   {urlCropError && (
                     <p className="text-red-400/70 text-xs mt-1.5">{urlCropError}</p>
+                  )}
+                  {imageFormatError && (
+                    <p className="text-red-400/70 text-xs mt-1.5">{imageFormatError}</p>
                   )}
                 </div>
 

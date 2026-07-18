@@ -170,9 +170,7 @@ const Articles: React.FC = () => {
                       <p className="text-white font-semibold text-sm leading-snug line-clamp-2 group-hover:text-white transition-colors">
                         {book.title}
                       </p>
-                      <p className="text-[#f26822] text-xs font-bold mt-1.5">
-                        ${book.price.toLocaleString('es-CO')} COP
-                      </p>
+                      <p className="text-white/30 text-xs mt-1.5">Ver opciones</p>
                     </div>
                     <ArrowRight size={14} className="text-white/20 group-hover:text-[#f26822] flex-shrink-0 transition-colors" />
                   </Link>

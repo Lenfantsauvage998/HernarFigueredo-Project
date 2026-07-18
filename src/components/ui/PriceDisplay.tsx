@@ -35,15 +35,7 @@ const PriceDisplay: React.FC<PriceDisplayProps> = ({ amountCOP, className = '' }
         style={{ color: currency === 'COP' ? undefined : DARK_YELLOW }}
         title="Ver en otra moneda"
       >
-        <span
-          style={{
-            display: 'inline-block',
-            transform: currency === 'COP' ? 'scale(0.85)' : undefined,
-            transformOrigin: 'left center',
-          }}
-        >
-          {formatPrice(amountCOP, currency, rates)}
-        </span>
+        {formatPrice(amountCOP, currency, rates)}
       </button>
       {open && (
         <div className="absolute left-0 top-full mt-2 bg-[#1f1d1d] border border-white/10 rounded-xl shadow-2xl z-50 py-1 min-w-[140px] divide-y divide-white/[0.06] overflow-hidden">

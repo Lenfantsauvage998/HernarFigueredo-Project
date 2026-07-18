@@ -51,12 +51,12 @@ export const createOrderDirect = async (
   if (svcErr) throw svcErr
 
   const svcMap = Object.fromEntries(
-    (services ?? []).map((s: { id: string; price: number; epub_price: number | null }) => [s.id, s])
+    (services ?? []).map((s: { id: string; price: number | null; epub_price: number | null }) => [s.id, s])
   )
   const priceFor = (item: { serviceId: string; format?: 'FISICO' | 'EPUB' }) => {
     const svc = svcMap[item.serviceId]
     if (!svc) return 0
-    return item.format === 'EPUB' ? (svc.epub_price ?? svc.price) : svc.price
+    return (item.format === 'EPUB' ? (svc.epub_price ?? svc.price) : svc.price) ?? 0
   }
   const totalAmount = items.reduce((sum, item) => sum + priceFor(item) * item.quantity, 0)
 

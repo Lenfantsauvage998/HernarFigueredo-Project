@@ -32,9 +32,9 @@ const BookDetailModal: React.FC<BookDetailModalProps> = ({ book, onClose }) => {
   return (
     <Modal isOpen={!!book} onClose={onClose} size="lg">
       <div className="flex flex-col md:flex-row gap-8">
-        {/* Cover */}
-        <div className="w-full md:w-48 flex-shrink-0">
-          <div className="relative h-64 md:h-full min-h-48 bg-gradient-to-br from-[#f26822]/10 to-[#2c2b2b] rounded-xl overflow-hidden border border-white/10">
+        {/* Cover — sticks near the top on desktop so it stays visible while long descriptions scroll */}
+        <div className="w-full md:w-48 flex-shrink-0 md:sticky md:top-0 md:self-start">
+          <div className="relative aspect-[3/4] bg-gradient-to-br from-[#f26822]/10 to-[#2c2b2b] rounded-xl overflow-hidden border border-white/10">
             {book.image_url ? (
               <>
                 {/* Blurred backdrop fills any letterbox space behind the cover */}
@@ -42,12 +42,16 @@ const BookDetailModal: React.FC<BookDetailModalProps> = ({ book, onClose }) => {
                   src={book.image_url}
                   alt=""
                   aria-hidden="true"
-                  className="absolute inset-0 w-full h-full object-cover scale-125 blur-2xl opacity-50"
+                  className="absolute inset-0 w-full h-full object-cover scale-125 blur-2xl opacity-90"
                 />
                 <img
                   src={book.image_url}
                   alt={book.title}
                   className="relative w-full h-full object-contain"
+                  style={{
+                    maskImage: 'linear-gradient(to bottom, transparent 0%, black 12%, black 88%, transparent 100%)',
+                    WebkitMaskImage: 'linear-gradient(to bottom, transparent 0%, black 12%, black 88%, transparent 100%)',
+                  }}
                 />
               </>
             ) : (
@@ -59,10 +63,27 @@ const BookDetailModal: React.FC<BookDetailModalProps> = ({ book, onClose }) => {
               </div>
             )}
           </div>
+
+          {/* Features — lives here on desktop so the cover column isn't just empty space below the image */}
+          {book.features.length > 0 && (
+            <div className="hidden md:block mt-6">
+              <p className="text-xs font-semibold uppercase tracking-widest text-white/30 mb-3">
+                Lo que aprenderás
+              </p>
+              <ul className="space-y-2.5">
+                {book.features.map((feature, i) => (
+                  <li key={i} className="flex items-start gap-2 text-xs text-white/60 leading-relaxed">
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#f26822] flex-shrink-0 mt-1" />
+                    {feature}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
         </div>
 
         {/* Details */}
-        <div className="flex-1 min-w-0">
+        <div className="flex-1 min-w-0 flex flex-col">
           <div className="flex items-center gap-2 mb-2">
             {[...Array(5)].map((_, i) => (
               <Star key={i} size={13} className="text-[#f26822] fill-[#f26822]" />
@@ -74,9 +95,9 @@ const BookDetailModal: React.FC<BookDetailModalProps> = ({ book, onClose }) => {
 
           <p className="text-white/60 text-sm leading-relaxed mb-5">{book.description}</p>
 
-          {/* Features */}
+          {/* Features — desktop shows this under the cover instead (see left column) */}
           {book.features.length > 0 && (
-            <div className="mb-6">
+            <div className="mb-6 md:hidden">
               <p className="text-xs font-semibold uppercase tracking-widest text-white/30 mb-3">
                 Lo que aprenderás
               </p>
@@ -91,7 +112,9 @@ const BookDetailModal: React.FC<BookDetailModalProps> = ({ book, onClose }) => {
             </div>
           )}
 
-          {/* Format selector */}
+          {/* Format selector + buying block — pinned to the bottom of the column so it
+              lines up consistently even when the description above is short */}
+          <div className="mt-auto">
           {showToggle && (
             <div className="flex gap-2 mb-5">
               <button
@@ -209,6 +232,7 @@ const BookDetailModal: React.FC<BookDetailModalProps> = ({ book, onClose }) => {
           {format === 'EPUB' && !hasVirtual && (
             <p className="text-white/30 text-sm">Versión virtual próximamente disponible.</p>
           )}
+          </div>
         </div>
       </div>
     </Modal>
