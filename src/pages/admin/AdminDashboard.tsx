@@ -48,6 +48,12 @@ const emptyForm = {
 
 const BUCKET = 'service-images'
 
+// Autosaves the in-progress "new article" form to localStorage so it survives
+// an accidental tab close/refresh before the admin hits save.
+const ARTICLE_DRAFT_KEY = 'hernan-article-draft'
+const hasDraftContent = (f: { title: string; content: string }) =>
+  !!(f.title.trim() || f.content.trim())
+
 // Book covers must be vertical (3:4) — matches the crop tool's output exactly,
 // so anything cropped through it always passes. Raw pasted URLs get rejected
 // unless they already match, to keep every cover looking consistent.
@@ -146,6 +152,17 @@ const AdminDashboard: React.FC = () => {
   const [uploadingAudio, setUploadingAudio] = useState(false)
   const [audioPreview, setAudioPreview] = useState<string | null>(null)
 
+  // Autosave the article form while creating a new one (not while editing —
+  // the original stays safe in the DB either way)
+  useEffect(() => {
+    if (!showArticleForm || editingArticle) return
+    if (!hasDraftContent(articleForm)) return
+    const t = setTimeout(() => {
+      localStorage.setItem(ARTICLE_DRAFT_KEY, JSON.stringify(articleForm))
+    }, 600)
+    return () => clearTimeout(t)
+  }, [articleForm, showArticleForm, editingArticle])
+
   // Settings
   const [commentNotifsEnabled, setCommentNotifsEnabled] = useState(true)
   const [notificationEmail, setNotificationEmail] = useState('')
@@ -228,6 +245,24 @@ const AdminDashboard: React.FC = () => {
     setCoverPreview(null)
     setAudioPreview(null)
     setShowArticleForm(true)
+
+    try {
+      const raw = localStorage.getItem(ARTICLE_DRAFT_KEY)
+      if (!raw) return
+      const draft = JSON.parse(raw)
+      if (!hasDraftContent(draft)) return
+      askConfirm(
+        'Tenés un borrador sin guardar',
+        `Encontré un artículo que no llegaste a guardar${draft.title ? ` ("${draft.title}")` : ''}. ¿Querés recuperarlo?`,
+        () => {
+          setDialog(DIALOG_CLOSED)
+          setArticleForm(draft)
+          setCoverPreview(draft.cover_url || null)
+          setAudioPreview(draft.audio_url || null)
+        },
+        false
+      )
+    } catch { /* corrupt draft — ignore */ }
   }
 
   const openEditArticle = (a: Article) => {
@@ -285,6 +320,7 @@ const AdminDashboard: React.FC = () => {
     } else {
       await supabase.from('articles').insert({ ...payload, published_at: new Date().toISOString() })
     }
+    localStorage.removeItem(ARTICLE_DRAFT_KEY)
     setSavingArticle(false); setShowArticleForm(false); fetchArticles()
   }
 
